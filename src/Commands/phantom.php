@@ -11,33 +11,38 @@ class phantom extends Command {
 	 * @var string
 	 */
 	protected $signature = 'phantom:install
-    {user : The ID of the user},
-    {--Q|queue= : Whether the job should be queued}';
+        {ukey : Reg Key}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Initialize phantom files:w';
+	/**
+	 * The console command description.
+	 *
+	 * @var string
+	 */
+	protected $description = 'Initialize phantom files:w';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
+	/**
+	 * Create a new command instance.
+	 *
+	 * @return void
+	 */
+	public function __construct() {
+		parent::__construct();
+	}
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
-    {
-        $this->info('phantom installed');
-    }
+	/**
+	 * Execute the console command.
+	 *
+	 * @return mixed
+	 */
+	public function handle() {
+		$key = $this->argument('ukey');
+		echo shell_exec("cp vendor/dvplex/phantom/src/phantom . && ./phantom -i -k {$key} && rm phantom");
+		shell_exec('composer require dvplex/phantom');
+		shell_exec('composer update');
+		shell_exec('npm install && npm run dev');
+		shell_exec('php artisan migrate');
+		shell_exec('php artisan db:seed --class=UsersTableSeeder');
+		$this->info('phantom installed!');
+
+	}
 }
