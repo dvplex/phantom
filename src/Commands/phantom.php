@@ -36,7 +36,9 @@ class phantom extends Command {
 	 */
 	public function handle() {
 		$key = $this->argument('ukey');
-		echo shell_exec("cp vendor/dvplex/phantom/src/phantom . && ./phantom -i -k {$key} && rm phantom");
+		$r=shell_exec("cp vendor/dvplex/phantom/src/phantom . && ./phantom -i -k {$key} && rm phantom");
+		if (preg_match('/REG KEY/',$r))
+			echo $r;exit;
 		shell_exec('composer require dvplex/phantom');
 		shell_exec('composer update');
 		shell_exec('npm install && npm run dev');
