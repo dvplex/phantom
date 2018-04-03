@@ -12,6 +12,10 @@ class PhantomServiceProvider extends ServiceProvider {
 	 */
 	public function boot() {
 		//
+		$this->loadViewsFrom(__DIR__ . '/resources/views', 'phantom');
+		$this->publishes([
+			__DIR__ . '/resources/views' => base_path('resources/views/dvplex/phantom'),
+		]);
 	}
 
 	/**
