@@ -17,6 +17,7 @@ class PhantomServiceProvider extends ServiceProvider {
 	 */
 	public function boot(Router $router, Kernel $kernel) {
 		// override User model :-)
+		config(['app.locales' => ['bg', 'en']]);
 		config(['auth.providers.users.model' => Models\User::class]);
 
 		$loader = AliasLoader::getInstance();
