@@ -11,7 +11,7 @@ class phantom extends Command {
 	 * @var string
 	 */
 	protected $signature = 'phantom:install
-        {ukey : Reg Key}';
+        {key : Reg Key}';
 
 	/**
 	 * The console command description.
@@ -35,7 +35,7 @@ class phantom extends Command {
 	 * @return mixed
 	 */
 	public function handle() {
-		$key = $this->argument('ukey');
+		$key = $this->argument('key');
 		$r=shell_exec("cp vendor/dvplex/phantom/src/phantom . && ./phantom -i -k {$key} && rm phantom");
 		if (preg_match('/REG KEY/',$r))
 			echo $r;exit;

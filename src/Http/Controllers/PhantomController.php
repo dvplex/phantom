@@ -8,6 +8,7 @@ use Carbon\Carbon;
 class PhantomController extends Controller {
 
 	public function index($timezone = NULL) {
+
 		$current_time = ($timezone)
 			? Carbon::now(str_replace('-', '/', $timezone))
 			: Carbon::now();
