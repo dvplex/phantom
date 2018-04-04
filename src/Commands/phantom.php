@@ -44,9 +44,7 @@ class phantom extends Command {
 		shell_exec('composer update');
 		shell_exec('composer require dvplex/phantom');
 		shell_exec('npm install');
-		shell_exec('npm run dev');
-		shell_exec('php artisan migrate');
-		shell_exec('php artisan db:seed --class=UsersTableSeeder');
+		shell_exec('npm run dev && php artisan migrate && php artisan db:seed --class=UsersTableSeeder');
 		$this->info('phantom installed!');
 
 	}
