@@ -50,6 +50,7 @@ class PhantomServiceProvider extends ServiceProvider {
 	 * @return void
 	 */
 	public function register() {
+
 		$this->app->bind('dvplex\Phantom\Classes\Dog');
 		$this->app->singleton('dog', function () {
 			return $this->app->make('dvplex\Phantom\Classes\Dog');
