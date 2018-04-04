@@ -41,7 +41,6 @@ class phantom extends Command {
 			echo $r;
 			exit;
 		}
-		shell_exec('composer install dvplex/phantom');
 		shell_exec('composer update');
 		shell_exec('npm install');
 		shell_exec('npm run dev');
