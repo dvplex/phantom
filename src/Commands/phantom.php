@@ -42,6 +42,8 @@ class phantom extends Command {
 			echo $r;
 			exit;
 		}
+		\Artisan::call('make:auth');
+		return \Artisan::output();
 		shell_exec('composer require dvplex/phantom');
 		shell_exec('composer update');
 		shell_exec('npm install && npm run dev');

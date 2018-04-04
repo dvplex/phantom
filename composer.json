@@ -49,7 +49,7 @@
                 "dvplex\\Phantom\\PhantomServiceProvider"
             ],
             "aliases": {
-                "Dog" : "dvplex\\Phantom\\Dog"
+                "Phantom" : "dvplex\\Phantom\\Phantom"
             }
         },
         "branch-alias": {
