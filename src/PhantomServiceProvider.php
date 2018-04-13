@@ -4,6 +4,7 @@ namespace dvplex\Phantom;
 
 use App\Http\Kernel;
 use dvplex\Phantom\Classes\Phantom;
+use dvplex\Phantom\Http\Middleware\PhantomApiMiddleware;
 use dvplex\Phantom\Http\Middleware\PhantomMiddleware;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Routing\Router;
@@ -17,16 +18,16 @@ class PhantomServiceProvider extends ServiceProvider {
 	 */
 	public function boot(Router $router, Kernel $kernel) {
 		// override User model :-)
-		config(['app.locales' => ['bg', 'en']]);
+		config(['app.locales' => ['en', 'bg']]);
 		config(['auth.providers.users.model' => Models\User::class]);
 
 		$loader = AliasLoader::getInstance();
 		$loader->alias('Phantom', Phantom::class);
 
 		$router->aliasMiddleware('phantom', PhantomMiddleware::class);
+		$router->aliasMiddleware('phantom_api', PhantomApiMiddleware::class);
 
 		view()->composer('layouts.side-navbar', function () {
-			phantom()->menu('main');
 		});
 
 		$this->loadViewsFrom(__DIR__ . '/resources/views', 'phantom');
@@ -42,6 +43,10 @@ class PhantomServiceProvider extends ServiceProvider {
 	 * @return void
 	 */
 	public function register() {
+		// local only fasade test
+		if (file_exists($file = __DIR__ . '/functions.php')) {
+			require $file;
+		}
 
 		$this->app->singleton('phantom', function () {
 			return $this->app->make('dvplex\Phantom\Classes\Phantom');

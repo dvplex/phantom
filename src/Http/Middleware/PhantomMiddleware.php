@@ -5,6 +5,7 @@ namespace dvplex\Phantom\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Contracts\Auth\Factory as Auth;
 
 class PhantomMiddleware {
 	/**
@@ -14,10 +15,15 @@ class PhantomMiddleware {
 	 * @param  \Closure $next
 	 * @return mixed
 	 */
+	protected $auth;
+
+	public function __construct(Auth $auth) {
+		$this->auth = $auth;
+	}
+
 	public function handle(Request $request, Closure $next) {
-		if (!auth()->user()) {
-			return redirect('/login');
-		}
+
+		$this->auth->authenticate();
 
 		\Session::put('phantom.modules.current', $request->route()->getName());
 
@@ -34,8 +40,13 @@ class PhantomMiddleware {
 			\Session::put('locale', $request->lang);;
 		}
 		if ($request->lang) {
-			\Session::put('locale', $request->lang);;
-			\App::setLocale($request->lang);
+			if (in_array($request->lang, config('app.locales'))) {
+				$lang = $request->lang;
+				\Session::put('locale', $lang);;
+				\App::setLocale($lang);
+			}
+			else
+				return redirect('/' . config('app.locales')[0] . '/' . \Session::get('phantom.modules.main'));
 		}
 
 		return $next($request);
