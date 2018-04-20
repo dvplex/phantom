@@ -4,10 +4,8 @@ namespace dvplex\Phantom;
 
 use App\Http\Kernel;
 use dvplex\Phantom\Classes\Phantom;
-use dvplex\Phantom\Http\Middleware\PhantomApiMiddleware;
-use dvplex\Phantom\Http\Middleware\PhantomMiddleware;
-use Illuminate\Foundation\AliasLoader;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 
 class PhantomServiceProvider extends ServiceProvider {
@@ -17,24 +15,25 @@ class PhantomServiceProvider extends ServiceProvider {
 	 * @return void
 	 */
 	public function boot(Router $router, Kernel $kernel) {
-		// override User model :-)
-		config(['app.locales' => ['en', 'bg']]);
-		config(['auth.providers.users.model' => Models\User::class]);
 
-		$loader = AliasLoader::getInstance();
-		$loader->alias('Phantom', Phantom::class);
+		Phantom::registerRoutes();
 
-		$router->aliasMiddleware('phantom', PhantomMiddleware::class);
-		$router->aliasMiddleware('phantom_api', PhantomApiMiddleware::class);
+		Phantom::registerConfig();
 
-		view()->composer('layouts.side-navbar', function () {
-		});
+		Phantom::registerAliases();
+
+		Phantom::eventsListen();
 
 		$this->loadViewsFrom(__DIR__ . '/resources/views', 'phantom');
 
 		$this->publishes([
 			__DIR__ . '/resources/views' => base_path('resources/views/dvplex/phantom'),
 		]);
+
+		Validator::extend('without_spaces', function ($attr, $value) {
+			return preg_match('/^\S*$/u', $value);
+		});
+
 	}
 
 	/**
@@ -44,15 +43,15 @@ class PhantomServiceProvider extends ServiceProvider {
 	 */
 	public function register() {
 		// local only fasade test
-//		if (file_exists($file = __DIR__ . '/functions.php')) {
-//			require $file;
-//		}
+		if (file_exists($file = __DIR__ . '/functions.php')) {
+			require $file;
+		}
 
 		$this->app->singleton('phantom', function () {
 			return $this->app->make('dvplex\Phantom\Classes\Phantom');
 		});
 
-		include __DIR__ . '/Http/routes.php';
+		$this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
 
 		if ($this->app->runningInConsole()) {
 			$this->commands([

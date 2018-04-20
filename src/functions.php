@@ -1,9 +1,40 @@
 <?php
+
 if (!function_exists('bark')) {
 	function bark() {
 		$phantom = app('phantom');
 
 		return $phantom::bark();
+
+	}
+
+}
+
+if (!function_exists('phantom_link')) {
+	function phantom_link($module) {
+		$phantom = app('phantom');
+
+		return $phantom::generateLink($module);
+
+	}
+
+}
+
+if (!function_exists('phantom_module_path')) {
+	function phantom_module_path($module) {
+		$phantom = app('phantom');
+
+		return $phantom::phantom_module_path($module);
+
+	}
+
+}
+
+if (!function_exists('phantom_get_routes')) {
+	function phantom_get_routes() {
+		$phantom = app('phantom');
+
+		return $phantom::phantom_get_routes();
 
 	}
 
