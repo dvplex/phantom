@@ -25,8 +25,9 @@ class Phantom {
 		echo 'Phantom is Barking!';
 	}
 
-	public static function generateLink($link) {
-		return url()->current() . '/' . $link;
+	public static function generateLink($path,$args) {
+		$args['lang']=app()->getLocale();
+		echo route('phantom.modules.'.$path,$args);
 	}
 
 	public static function eventsListen() {
@@ -72,7 +73,7 @@ class Phantom {
 					$path = $route->route;
 					$requestMethod = $route->httpMethod;
 					$controllerMethod = $route->controllerMethod;
-					$router->$requestMethod($path, $module_name . 'Controller@' . $controllerMethod)->name(mb_strtolower('phantom.modules.' . $module_name));
+					$router->$requestMethod($path, $module_name . 'Controller@' . $controllerMethod)->name(mb_strtolower('phantom.modules.' . $module_name.'@'.$controllerMethod));
 				});
 			}
 		}
@@ -90,7 +91,8 @@ class Phantom {
 		$collection = Route::getRoutes();
 		foreach ($collection as $route) {
 			if ($route->named('phantom.*')) {
-				$name = preg_replace('/phantom\./', '', $route->getName());
+				$name = explode('@',preg_replace('/phantom\./', '', $route->getName()));
+				$name=$name[0];
 				if ($route->named('phantom.modules.*')) {
 					$name = preg_replace('/modules\./', '', $name);
 					$routes['modules'][$name]['methods'][$route->getActionMethod()]['path'] = $route->uri();

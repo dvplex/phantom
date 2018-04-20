@@ -11,10 +11,10 @@ if (!function_exists('bark')) {
 }
 
 if (!function_exists('phantom_link')) {
-	function phantom_link($module) {
+	function phantom_link($path,$args) {
 		$phantom = app('phantom');
 
-		return $phantom::generateLink($module);
+		return $phantom::generateLink($path,$args);
 
 	}
 

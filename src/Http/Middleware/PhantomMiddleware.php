@@ -23,8 +23,7 @@ class PhantomMiddleware {
 
 	public function handle(Request $request, Closure $next) {
 		$this->auth->authenticate();
-
-		config(['phantom.modules.current' => preg_replace('/phantom\.modules\./', '', $request->route()->getName())]);
+		config(['phantom.modules.current' => preg_replace(['/phantom\.modules\./','/\@\S+/'], '', $request->route()->getName())]);
 
 		return $next($request);
 	}
