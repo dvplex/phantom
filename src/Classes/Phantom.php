@@ -59,9 +59,9 @@ class Phantom {
 		$router = app()->make('router');
 		$router->aliasMiddleware('phantom', PhantomMiddleware::class);
 		$router->aliasMiddleware('phantom_locale', PhantomLocaleMiddleware::class);
-
-		$routeGroup = [];
-		$routes = Routes::with('module', 'middlewares')->get();;
+		if (!class_exists('Modules\Routes\Entities\Route'))
+			return;
+		$routes = Routes::with('module', 'middlewares')->get();
 		if ($routes) {
 			foreach ($routes as $route) {
 				$middleware = $route->middlewares->pluck('name')->toArray();
