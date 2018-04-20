@@ -6,6 +6,7 @@ use dvplex\Phantom\Http\Middleware\PhantomLocaleMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use dvplex\Phantom\Http\Middleware\PhantomMiddleware;
+use Illuminate\Support\Facades\Schema;
 use Nwidart\Modules\Facades\Module;
 use Illuminate\Foundation\AliasLoader;
 use Spatie\Menu\Laravel\Html;
@@ -59,7 +60,7 @@ class Phantom {
 		$router = app()->make('router');
 		$router->aliasMiddleware('phantom', PhantomMiddleware::class);
 		$router->aliasMiddleware('phantom_locale', PhantomLocaleMiddleware::class);
-		if (!class_exists('Modules\Routes\Entities\Route'))
+		if (!class_exists('Modules\Routes\Entities\Route')||!Schema::hasTable('routes'))
 			return;
 		$routes = Routes::with('module', 'middlewares')->get();
 		if ($routes) {
