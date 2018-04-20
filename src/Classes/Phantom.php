@@ -154,8 +154,6 @@ class Phantom {
 		foreach (app('modules')->all() as $module) {
 			echo $module->getName() . ' ' . $module->enabled() . ' ' . $module->getPath() . '<br>';
 		}
-		//\Artisan::call('module:list');
-		//return \Artisan::output();
 	}
 
 	protected static function stubReplace($module, $name, $namePath = false) {
