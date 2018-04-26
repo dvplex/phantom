@@ -11,10 +11,20 @@ if (!function_exists('bark')) {
 }
 
 if (!function_exists('phantom_link')) {
-	function phantom_link($path,$args) {
+	function phantom_link($path,$args=[]) {
 		$phantom = app('phantom');
 
 		return $phantom::generateLink($path,$args);
+
+	}
+
+}
+
+if (!function_exists('phantom_search')) {
+	function phantom_search($id,$action) {
+		$phantom = app('phantom');
+
+		return $phantom::generateSearch($id,$action);
 
 	}
 

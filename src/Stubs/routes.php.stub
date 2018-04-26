@@ -4,6 +4,6 @@ Route::group(['middleware' => ['web','phantom','phantom_locale'],  'namespace' =
 	Route::get('/$LOWER_NAME$',function (){
 		return redirect(app()->getLocale().'/$LOWER_NAME$');
 	})->name('phantom.modules.$LOWER_NAME$');
-	Route::get('/{lang?}/$LOWER_NAME$', '$STUDLY_NAME$Controller@index')->name('phantom.modules.$LOWER_NAME$');
+	Route::get('/{lang?}/$LOWER_NAME$', '$STUDLY_NAME$Controller@index')->name('phantom.modules.$LOWER_NAME$@index');
 });
 

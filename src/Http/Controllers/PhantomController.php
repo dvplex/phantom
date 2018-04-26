@@ -38,6 +38,9 @@ class PhantomController extends Controller {
 		return phantom_route($loc);
 
 	}
+	public function getOrderBy() {
+
+	}
 
 }
 

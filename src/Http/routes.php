@@ -15,6 +15,9 @@ Route::group(['middleware' => ['web','phantom_locale'], 'namespace' => 'App\Http
 	Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
 	Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
 	Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
-	ROute::post('password/reset', 'Auth\ResetPasswordController@reset');
+	Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 });
 
+Route::group(['middleware' => ['web','phantom','phantom_locale'], 'namespace' => 'App\Http\Controllers'], function () {
+	Route::get('/phantom/getOrderBy','dvplex\Phantom\Http\Controllers\PhantomController@getOrderBy');
+});

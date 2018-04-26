@@ -4,6 +4,7 @@ namespace dvplex\Phantom\Classes;
 
 use dvplex\Phantom\Http\Middleware\PhantomLocaleMiddleware;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use dvplex\Phantom\Http\Middleware\PhantomMiddleware;
 use Illuminate\Support\Facades\Schema;
@@ -25,9 +26,26 @@ class Phantom {
 		echo 'Phantom is Barking!';
 	}
 
-	public static function generateLink($path,$args) {
+	public static function generateSearch($id,$action) {
+		print_r(session(".search.{$id}.query"));
+		$content='
+			<phantom-search
+					id="'.$id.'"
+					action="'.$action.'"
+					current-page="'.session("search.{$id}.page").'"
+					search-id="'.session("search.{$id}.query").'"
+					order-by-fields="'.htmlspecialchars(json_encode(session("search.orderFields"))).'"
+					order-by-id="'.session("search.{$id}.order.name").'"
+					order-by-dir="'.session("search.{$id}.order.dir").'">
+					'.csrf_field().'
+			</phantom-search>
+		';
+		return $content;
+	}
+
+	public static function generateLink($path,$args=[]) {
 		$args['lang']=app()->getLocale();
-		echo route('phantom.modules.'.$path,$args);
+		return route('phantom.modules.'.$path,$args);
 	}
 
 	public static function eventsListen() {
@@ -53,6 +71,8 @@ class Phantom {
 		// override User model :-)
 		config(['auth.providers.users.model' => \dvplex\Phantom\Models\User::class]);
 		config(['phantom.modules.main' => 'admin']);
+
+		Paginator::defaultView('layouts.paginate');
 
 		return;
 	}
