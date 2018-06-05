@@ -194,6 +194,8 @@ class Phantom {
 					$menus = \Modules\Menus\Entities\Menu::with('nodes')->first();
 				else
 					$menus = \Modules\Menus\Entities\Menu::with('nodes')->where('name', $type)->first();
+				if ($menus == null)
+					return;
 				$nodes = $menus->nodes()->get();
 				$menu = Menu::new();
 				$menu->addClass('site-menu');
