@@ -15,10 +15,8 @@ class PhantomLocaleMiddleware {
 	 * @param  \Closure $next
 	 * @return mixed
 	 */
-	protected $auth;
 
 	public function __construct(Auth $auth) {
-		$this->auth = $auth;
 	}
 
 	public function handle(Request $request, Closure $next) {

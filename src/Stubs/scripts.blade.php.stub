@@ -1,1 +1,1 @@
-<script src="/js/$MODULE_NAMESPACE$/$STUDLY_NAME$/after.js"></script>
+<script src="/js/$MODULE_NAMESPACE$/$STUDLY_NAME$/after.js" defer></script>

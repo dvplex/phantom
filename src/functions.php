@@ -20,6 +20,16 @@ if (!function_exists('phantom_link')) {
 
 }
 
+if (!function_exists('phantom_view')) {
+	function phantom_view($id,$view,$data) {
+		$phantom = app('phantom');
+
+		return $phantom::phantomView($id,$view,$data);
+
+	}
+
+}
+
 if (!function_exists('phantom_search')) {
 	function phantom_search($id,$action) {
 		$phantom = app('phantom');

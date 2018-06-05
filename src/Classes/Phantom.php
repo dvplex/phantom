@@ -8,6 +8,7 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use dvplex\Phantom\Http\Middleware\PhantomMiddleware;
 use Illuminate\Support\Facades\Schema;
+use Modules\MenuNodes\Entities\MenuNode;
 use Nwidart\Modules\Facades\Module;
 use Illuminate\Foundation\AliasLoader;
 use Spatie\Menu\Laravel\Html;
@@ -26,26 +27,37 @@ class Phantom {
 		echo 'Phantom is Barking!';
 	}
 
-	public static function generateSearch($id,$action) {
-		print_r(session(".search.{$id}.query"));
-		$content='
+	public static function phantomView($id, $view, $data) {
+		$v = [];
+		$view = \View::make($view, $data);
+		$view = $view->render();
+		$v['id'] = $id;
+		$v['view'] = $view;
+
+		return $v;
+	}
+
+	public static function generateSearch($id, $action) {
+		$content = '
 			<phantom-search
-					id="'.$id.'"
-					action="'.$action.'"
-					current-page="'.session("search.{$id}.page").'"
-					search-id="'.session("search.{$id}.query").'"
-					order-by-fields="'.htmlspecialchars(json_encode(session("search.orderFields"))).'"
-					order-by-id="'.session("search.{$id}.order.name").'"
-					order-by-dir="'.session("search.{$id}.order.dir").'">
-					'.csrf_field().'
+					id="' . $id . '"
+					action="' . $action . '"
+					current-page="' . session("search.{$id}.page") . '"
+					search-id="' . session("search.{$id}.query") . '"
+					order-by-fields="' . htmlspecialchars(json_encode(session("search.orderFields"))) . '"
+					order-by-id="' . session("search.{$id}.order.name") . '"
+					order-by-dir="' . session("search.{$id}.order.dir") . '">
+					' . csrf_field() . '
 			</phantom-search>
 		';
+
 		return $content;
 	}
 
-	public static function generateLink($path,$args=[]) {
-		$args['lang']=app()->getLocale();
-		return route('phantom.modules.'.$path,$args);
+	public static function generateLink($path, $args = []) {
+		$args['lang'] = app()->getLocale();
+
+		return route('phantom.modules.' . $path, $args);
 	}
 
 	public static function eventsListen() {
@@ -70,8 +82,8 @@ class Phantom {
 		config(['app.locales' => ['en', 'bg']]);
 		// override User model :-)
 		config(['auth.providers.users.model' => \dvplex\Phantom\Models\User::class]);
+		config(['permission.models.role' => \dvplex\Phantom\Models\Role::class]);
 		config(['phantom.modules.main' => 'admin']);
-
 		Paginator::defaultView('layouts.paginate');
 
 		return;
@@ -81,7 +93,7 @@ class Phantom {
 		$router = app()->make('router');
 		$router->aliasMiddleware('phantom', PhantomMiddleware::class);
 		$router->aliasMiddleware('phantom_locale', PhantomLocaleMiddleware::class);
-		if (!class_exists('Modules\Routes\Entities\Route')||!Schema::hasTable('routes'))
+		if (!class_exists('Modules\Routes\Entities\Route') || !Schema::hasTable('routes'))
 			return;
 		$routes = Routes::with('module', 'middlewares')->get();
 		if ($routes) {
@@ -93,7 +105,7 @@ class Phantom {
 					$path = $route->route;
 					$requestMethod = $route->httpMethod;
 					$controllerMethod = $route->controllerMethod;
-					$router->$requestMethod($path, $module_name . 'Controller@' . $controllerMethod)->name(mb_strtolower('phantom.modules.' . $module_name.'@'.$controllerMethod));
+					$router->$requestMethod($path, $module_name . 'Controller@' . $controllerMethod)->name(mb_strtolower('phantom.modules.' . $module_name . '@' . $controllerMethod));
 				});
 			}
 		}
@@ -111,8 +123,8 @@ class Phantom {
 		$collection = Route::getRoutes();
 		foreach ($collection as $route) {
 			if ($route->named('phantom.*')) {
-				$name = explode('@',preg_replace('/phantom\./', '', $route->getName()));
-				$name=$name[0];
+				$name = explode('@', preg_replace('/phantom\./', '', $route->getName()));
+				$name = $name[0];
 				if ($route->named('phantom.modules.*')) {
 					$name = preg_replace('/modules\./', '', $name);
 					$routes['modules'][$name]['methods'][$route->getActionMethod()]['path'] = $route->uri();
@@ -142,29 +154,56 @@ class Phantom {
 		return redirect($str);
 	}
 
+	protected static function renderNode($node) {
+		$ct = '';
+		if ($node->children()->count() > 0) {
+			$ct .= '<li class="site-menu-item has-sub"><a class="animsition-link" href="javascript:void(0)">';
+			if ($node->depth == 0)
+				$ct .= '<i class="site-menu-icon wb-dashboard" aria-hidden="true"></i>';
+			$ct .= '<span class="site-menu-title">' . Lang::get('menu.' . $node->name) . '</span>
+							<span class="site-menu-arrow"></span>
+						</a>';
+		}
+		else {
+			$ct .= '<li class="site-menu-item "><a class="animsition-link" href="' . route($node->route, ['lang' => app()->getLocale()]) . '">';
+			if ($node->depth == 0)
+				$ct .= '<i class="site-menu-icon wb-dashboard" aria-hidden="true"></i>';
+			$ct .= '<span class="site-menu-title">' . Lang::get('menu.' . $node->name) . '</span>
+						</a>';
+		}
+
+		if ($node->children()->count() > 0) {
+			$ct .= '<ul class="site-menu-sub">';
+			foreach ($node->children as $child)
+				$ct .= self::renderNode($child);
+			$ct .= "</ul>";
+		}
+
+		$ct .= "</li>";
+
+		return $ct;
+	}
+
 	public static function menu($type = false) {
 
 		switch ($type) {
 			case "side":
 			default:
+				$content = '';
+				if (!$type)
+					$menus = \Modules\Menus\Entities\Menu::with('nodes')->first();
+				else
+					$menus = \Modules\Menus\Entities\Menu::with('nodes')->where('name', $type)->first();
+				$nodes = $menus->nodes()->get();
 				$menu = Menu::new();
 				$menu->addClass('site-menu');
 				$menu->addItemClass('site-menu-item');
 				$menu->setAttribute('data-plugin', 'menu');
 				$menu->html('<li class="site-menu-category">' . Lang::get('menu.menu') . '</li>');
-				$menu->html('
-							<a href="javascript:void(0);">
-							<i class="site-menu-icon wb-dashboard" aria-hidden="true"></i>
-							<span class="site-menu-title">' . Lang::get('menu.Dashboard') . '</span>
-						</a>
-						<ul class="site-menu-sub">
-                            <li class="site-menu-item">
-                               <a class="animsition-link" href="/' . app()->getLocale() . '/admin/">
-                                    <span class="site-menu-title">' . Lang::get('menu.Dashboard') . '1</span>
-                                </a>
-                            </li>
-                           </ul>
-				')->addItemParentClass('site-menu-item has-sub');
+				foreach ($nodes as $node)
+					if ($node->parent_id == null)
+						$content .= self::renderNode($node);
+				$menu->html($content)->addItemParentClass('site-menu-item has-sub');
 
 				return $menu;
 				break;

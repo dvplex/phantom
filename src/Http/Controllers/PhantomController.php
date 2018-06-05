@@ -23,12 +23,13 @@ class PhantomController extends Controller {
 		if ($lang == 'login') {
 			$lang = explode('-', $request->server('HTTP_ACCEPT_LANGUAGE'));
 			$lang = $lang[0];
+
 			return redirect('/' . $lang . '/login/');
 		}
-		if (!$lang) {
+		if (!$lang || !in_array($lang, config('app.locales'))){
 			$lang = explode('-', $request->server('HTTP_ACCEPT_LANGUAGE'));
-			$lang = $lang[0];
-		}
+		$lang = $lang[0];
+	}
 
 		return redirect($lang . '/' . config('phantom.modules.main'));
 	}
@@ -36,9 +37,6 @@ class PhantomController extends Controller {
 	public function setLocale($loc) {
 
 		return phantom_route($loc);
-
-	}
-	public function getOrderBy() {
 
 	}
 
