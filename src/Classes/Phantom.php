@@ -165,11 +165,13 @@ class Phantom {
 						</a>';
 		}
 		else {
-			$ct .= '<li class="site-menu-item "><a class="animsition-link" href="' . route($node->route, ['lang' => app()->getLocale()]) . '">';
-			if ($node->depth == 0)
-				$ct .= '<i class="site-menu-icon wb-dashboard" aria-hidden="true"></i>';
-			$ct .= '<span class="site-menu-title">' . Lang::get('menu.' . $node->name) . '</span>
-						</a>';
+			if ($node->route != null) {
+				$ct .= '<li class="site-menu-item "><a class="animsition-link" href="' . route($node->route, ['lang' => app()->getLocale()]) . '">';
+				if ($node->depth == 0)
+					$ct .= '<i class="site-menu-icon wb-dashboard" aria-hidden="true"></i>';
+				$ct .= '<span class="site-menu-title">' . Lang::get('menu.' . $node->name) . '</span>
+                            </a>';
+			}
 		}
 
 		if ($node->children()->count() > 0) {
