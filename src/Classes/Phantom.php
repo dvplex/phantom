@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Artisan;
 use Modules\Modules\Entities\Module as Modules;
 use Modules\Routes\Entities\Route as Routes;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Middlewares\PermissionMiddleware;
+use Spatie\Permission\Middlewares\RoleMiddleware;
 
 class Phantom {
 
@@ -93,6 +95,8 @@ class Phantom {
 		$router = app()->make('router');
 		$router->aliasMiddleware('phantom', PhantomMiddleware::class);
 		$router->aliasMiddleware('phantom_locale', PhantomLocaleMiddleware::class);
+		$router->aliasMiddleware('role', RoleMiddleware::class);
+		$router->aliasMiddleware('permission', PermissionMiddleware::class);
 		if (!class_exists('Modules\Routes\Entities\Route') || !Schema::hasTable('routes'))
 			return;
 		$routes = Routes::with('module', 'middlewares')->get();
