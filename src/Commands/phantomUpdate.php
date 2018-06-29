@@ -44,10 +44,8 @@ class phantomUpdate extends Command {
 		}
 		shell_exec('mv webpack.mix.js.b webpack.mix.js');
 		shell_exec('composer update');
-		shell_exec('composer require dvplex/phantom');
-		shell_exec('npm install');
-		shell_exec('npm run dev && php artisan migrate && php artisan db:seed --class=UsersTableSeeder');
-		$this->info('phantom installed!');
+		shell_exec('npm run dev && php artisan migrate');
+		$this->info('phantom updated!');
 
 	}
 }
