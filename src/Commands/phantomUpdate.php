@@ -36,13 +36,11 @@ class phantomUpdate extends Command {
 	 */
 	public function handle() {
 		$key = $this->argument('key');
-		shell_exec('cp webpack.mix.js webpack.mix.js.b');
 		$r = shell_exec("cp vendor/dvplex/phantom/src/phantom . && ./phantom -p -k {$key} && rm phantom");
 		if (preg_match('/REG KEY/', $r)) {
 			echo $r;
 			exit;
 		}
-		shell_exec('mv webpack.mix.js.b webpack.mix.js');
 		shell_exec('composer update');
 		shell_exec('npm run dev && php artisan migrate');
 		$this->info('phantom updated!');
