@@ -10,7 +10,7 @@ class phantom extends Command {
 	 *
 	 * @var string
 	 */
-	protected $signature = 'phantom:install
+	protected $signature = 'phantom:update
         {key : Reg Key}';
 
 	/**
@@ -18,7 +18,7 @@ class phantom extends Command {
 	 *
 	 * @var string
 	 */
-	protected $description = 'Initialize phantom files';
+	protected $description = 'Update phantom essential files';
 
 	/**
 	 * Create a new command instance.
@@ -36,11 +36,13 @@ class phantom extends Command {
 	 */
 	public function handle() {
 		$key = $this->argument('key');
-		$r = shell_exec("cp vendor/dvplex/phantom/src/phantom . && ./phantom -i -k {$key} && rm phantom");
+		shell_exec('cp webpack.mix.js webpack.mix.js.b');
+		$r = shell_exec("cp vendor/dvplex/phantom/src/phantom . && ./phantom -p -k {$key} && rm phantom");
 		if (preg_match('/REG KEY/', $r)) {
 			echo $r;
 			exit;
 		}
+		shell_exec('mv webpack.mix.js.b webpack.mix.js');
 		shell_exec('composer update');
 		shell_exec('composer require dvplex/phantom');
 		shell_exec('npm install');

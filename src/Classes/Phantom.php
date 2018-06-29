@@ -3,10 +3,12 @@
 namespace dvplex\Phantom\Classes;
 
 use dvplex\Phantom\Http\Middleware\PhantomLocaleMiddleware;
+use function foo\func;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use dvplex\Phantom\Http\Middleware\PhantomMiddleware;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Modules\MenuNodes\Entities\MenuNode;
 use Nwidart\Modules\Facades\Module;
@@ -197,9 +199,23 @@ class Phantom {
 			default:
 				$content = '';
 				if (!$type)
-					$menus = \Modules\Menus\Entities\Menu::with('nodes')->first();
+					$menus = \Modules\Menus\Entities\Menu::with('nodes', 'roles', 'permissions')
+						->whereHas('roles', function ($q) {
+							$roles = \Auth::user()->roles->pluck('name')->toArray();
+							$q->whereIn('name', $roles);
+						})
+						->orWhereHas('permissions',function($q) {
+							$pms = \Auth::user()->permissions->pluck('name')->toArray();
+							$q->whereIn('name', $pms);
+						})
+						->first();
 				else
-					$menus = \Modules\Menus\Entities\Menu::with('nodes')->where('name', $type)->first();
+					$menus = \Modules\Menus\Entities\Menu::with('nodes', 'roles', 'permissions')
+						->where('name', $type)
+						->whereHas('roles', function ($q) {
+							$q->whereIn('name', \Auth::user()->roles->pluck('name')->toArray());
+						})
+						->first();
 				if ($menus == null)
 					return;
 				$nodes = $menus->nodes()->get();
