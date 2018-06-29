@@ -4,7 +4,7 @@ namespace dvplex\Phantom\Commands;
 
 use Illuminate\Console\Command;
 
-class phantom extends Command {
+class phantomUpdate extends Command {
 	/**
 	 * The name and signature of the console command.
 	 *
