@@ -48,7 +48,7 @@ class Phantom {
 					action="' . $action . '"
 					current-page="' . session("search.{$id}.page") . '"
 					search-id="' . session("search.{$id}.query") . '"
-					order-by-fields="' . htmlspecialchars(json_encode(session("search.orderFields"))) . '"
+					order-by-fields="' . htmlspecialchars(json_encode(session("search.{$id}.orderFields"))) . '"
 					order-by-id="' . session("search.{$id}.order.name") . '"
 					order-by-dir="' . session("search.{$id}.order.dir") . '">
 					' . csrf_field() . '
@@ -87,6 +87,7 @@ class Phantom {
 		// override User model :-)
 		config(['auth.providers.users.model' => \dvplex\Phantom\Models\User::class]);
 		config(['permission.models.role' => \dvplex\Phantom\Models\Role::class]);
+		config(['permission.models.permission' => \dvplex\Phantom\Models\Permission::class]);
 		config(['phantom.modules.main' => 'admin']);
 		Paginator::defaultView('layouts.paginate');
 
@@ -101,13 +102,15 @@ class Phantom {
 		$router->aliasMiddleware('permission', PermissionMiddleware::class);
 		if (!class_exists('Modules\Routes\Entities\Route') || !Schema::hasTable('routes'))
 			return;
-		$routes = Routes::with('module', 'middlewares')->get();
+		$routes = Routes::with('module', 'middlewares','roles','permissions')->get();
 		if ($routes) {
 			foreach ($routes as $route) {
 				$middleware = $route->middlewares->pluck('name')->toArray();
+				$roles = $route->roles->implode('name','|');
+				$permissions = $route->permissions->implode('name','|');
+				array_push($middleware,'role:'.$roles,'permission:'.$permissions);
 				$module_name = $route->module->module_name;
-				$router->group(['middleware' => $middleware, 'namespace' => '\\Modules\\' . $module_name . '\\Http\\Controllers'], function ($router) use ($route) {
-					$module_name = $route->module->module_name;
+				$router->group(['middleware' => $middleware, 'namespace' => '\\Modules\\' . $module_name . '\\Http\\Controllers'], function ($router) use ($route, $module_name) {
 					$path = $route->route;
 					$requestMethod = $route->httpMethod;
 					$controllerMethod = $route->controllerMethod;
