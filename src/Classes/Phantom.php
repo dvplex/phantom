@@ -102,13 +102,22 @@ class Phantom {
 		$router->aliasMiddleware('permission', PermissionMiddleware::class);
 		if (!class_exists('Modules\Routes\Entities\Route') || !Schema::hasTable('routes'))
 			return;
-		$routes = Routes::with('module', 'middlewares','roles','permissions')->get();
+		if (in_array('Spatie\Permission\Traits\HasRoles', class_uses(Routes::class)))
+			$routes = Routes::with('module', 'middlewares', 'roles', 'permissions')->get();
+		else
+			$routes = Routes::with('module', 'middlewares')->get();
 		if ($routes) {
 			foreach ($routes as $route) {
 				$middleware = $route->middlewares->pluck('name')->toArray();
-				$roles = $route->roles->implode('name','|');
-				$permissions = $route->permissions->implode('name','|');
-				array_push($middleware,'role:'.$roles,'permission:'.$permissions);
+				if (isset($route->roles)) {
+					$roles = $route->roles->implode('name', '|');
+					array_push($middleware, 'role:' . $roles);
+				}
+				if (isset($route->permissions)) {
+					$permissions = $route->permissions->implode('name', '|');
+					array_push($middleware, 'permission:' . $permissions);
+				}
+
 				$module_name = $route->module->module_name;
 				$router->group(['middleware' => $middleware, 'namespace' => '\\Modules\\' . $module_name . '\\Http\\Controllers'], function ($router) use ($route, $module_name) {
 					$path = $route->route;
@@ -207,7 +216,7 @@ class Phantom {
 							$roles = \Auth::user()->roles->pluck('name')->toArray();
 							$q->whereIn('name', $roles);
 						})
-						->orWhereHas('permissions',function($q) {
+						->orWhereHas('permissions', function ($q) {
 							$pms = \Auth::user()->permissions->pluck('name')->toArray();
 							$q->whereIn('name', $pms);
 						})
