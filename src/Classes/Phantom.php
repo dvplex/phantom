@@ -6,6 +6,7 @@ use dvplex\Phantom\Http\Middleware\PhantomLocaleMiddleware;
 use function foo\func;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Collection;
 use dvplex\Phantom\Http\Middleware\PhantomMiddleware;
 use Illuminate\Support\Facades\Auth;
@@ -109,15 +110,14 @@ class Phantom {
 		if ($routes) {
 			foreach ($routes as $route) {
 				$middleware = $route->middlewares->pluck('name')->toArray();
-				if (isset($route->roles)) {
+				if (isset($route->roles) && count($route->roles)) {
 					$roles = $route->roles->implode('name', '|');
 					array_push($middleware, 'role:' . $roles);
 				}
-				if (isset($route->permissions)) {
+				if (isset($route->permissions) && count($route->permissions)) {
 					$permissions = $route->permissions->implode('name', '|');
 					array_push($middleware, 'permission:' . $permissions);
 				}
-
 				$module_name = $route->module->module_name;
 				$router->group(['middleware' => $middleware, 'namespace' => '\\Modules\\' . $module_name . '\\Http\\Controllers'], function ($router) use ($route, $module_name) {
 					$path = $route->route;
