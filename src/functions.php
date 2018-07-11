@@ -10,31 +10,41 @@ if (!function_exists('bark')) {
 
 }
 
-if (!function_exists('phantom_link')) {
-	function phantom_link($path,$args=[]) {
+if (!function_exists('phantom_slovom')) {
+	function phantom_slovom($int, $currency=false) {
 		$phantom = app('phantom');
 
-		return $phantom::generateLink($path,$args);
+		return $phantom::Slovom($int, $currency);
+
+	}
+
+}
+
+if (!function_exists('phantom_link')) {
+	function phantom_link($path, $args = []) {
+		$phantom = app('phantom');
+
+		return $phantom::generateLink($path, $args);
 
 	}
 
 }
 
 if (!function_exists('phantom_view')) {
-	function phantom_view($id,$view,$data) {
+	function phantom_view($id, $view, $data) {
 		$phantom = app('phantom');
 
-		return $phantom::phantomView($id,$view,$data);
+		return $phantom::phantomView($id, $view, $data);
 
 	}
 
 }
 
 if (!function_exists('phantom_search')) {
-	function phantom_search($id,$action) {
+	function phantom_search($id, $action) {
 		$phantom = app('phantom');
 
-		return $phantom::generateSearch($id,$action);
+		return $phantom::generateSearch($id, $action);
 
 	}
 

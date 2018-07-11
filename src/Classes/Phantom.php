@@ -323,4 +323,142 @@ class Phantom {
 
 		return $modules->save();
 	}
+
+	public static function Slovom($int, $currency = false) {
+		if ($currency)
+			$two = 'два';
+		else
+			$two = 'двe';
+		$units = array('нула', 'един', $two , 'три', 'четери', 'пет', 'шест', 'седем', 'осем', 'девет');
+		$teens = array('десет', 'единадесет', 'дванадесет', 'тринадесет', 'четеринадесет', 'петнадесет', 'шестнадесет', 'седемнадесет', 'осемнадесет', 'деветнадесет');
+		$hundredth = array(1 => 'сто', 'двеста', 'триста', 'четеристотин', 'петстотин', 'шестстотин', 'седемстотин', 'осемстотин', 'деветстотин');
+		$tens = array(2 => 'двадесет', 'тридесет', 'четеридесет', 'петдесет', 'шестдесет', 'седемдесет', 'осемдесет', 'деветдесет');
+		$suffix = array('хиляди', 'милиона', 'милиарда', 'trillion', 'quadrillion');
+		$flag = '';
+
+		if (!preg_match('#^[\d.]+$#', $int)) {
+			echo('Невалидни символи! Моля въведете числова стойност.');
+
+			return;
+		}
+
+		if (strpos($int, '.') !== false) {
+			$decimal = substr($int, strpos($int, '.') + 1);
+			$int = substr($int, 0, strpos($int, '.'));
+		}
+
+		$int = ltrim($int, '0');
+
+		if ($int == '') {
+			$int = '0';
+		}
+
+
+		if ($negative = ($int < 0)) {
+			$int = substr($int, 1);
+		}
+
+		if (strlen($int) > 18) {
+			echo('Числото съдържа повече от 18 цифри!');
+
+			return;
+		}
+
+		switch (strlen($int)) {
+
+			case '1':
+				$text = $units[$int];
+				break;
+
+
+			case '2':
+				if ($int{0} == '1') {
+					$text = $teens[$int{1}];
+
+				}
+				else if ($int{1} == '0') {
+					$text = $tens[$int{0}];
+					if ($flag == 3) $text = 'и ' . $text;
+					$flag = 0;
+				}
+				else {
+					$text = $tens[$int{0}] . ' и ' . $units[$int{1}];
+				}
+				break;
+
+
+			case '3':
+				if ($int % 100 == 0) {
+					$text = $hundredth[$int{0}];
+				}
+				else {
+					$int_tmp = substr($int, 1);
+					$add = 'и';
+					$flag = 3;
+					$text = $hundredth[$int{0}] . " $add " . self::Slovom(substr($int, 1));
+
+				}
+				break;
+
+
+			default:
+				$pieces = array();
+				$suffixIndex = 0;
+
+				$num = substr($int, -3);
+				if ($num > 0) {
+					$pieces[] = self::Slovom($num);
+				}
+				$int = substr($int, 0, -3);
+
+				while (strlen($int) > 3) {
+					$num = substr($int, -3);
+
+					if ($num > 0) {
+						$pieces[] = self::slovom($num) . ' ' . $suffix[$suffixIndex];
+					}
+					$int = substr($int, 0, -3);
+					$suffixIndex++;
+				}
+
+				if (substr($int, -3) == 1) {
+					$preff = '';
+					$t = $suffix[$suffixIndex];
+					if ($suffixIndex == 0 && $int == 1) $ending = 'а';
+					else $preff = 'един ';
+					$pieces[] = $preff . substr($t, 0, -2) . $ending;
+				}
+				else {
+					$pieces[] = self::Slovom(substr($int, -3)) . ' ' . $suffix[$suffixIndex];
+				}
+
+				$pieces = array_reverse($pieces);
+
+				if (count($pieces) > 1 AND strpos($pieces[count($pieces) - 1], ' и ') === false) {
+					$pieces[] = $pieces[count($pieces) - 1];
+					$pieces[count($pieces) - 2] = 'и';
+				}
+
+				$text = implode(' ', $pieces);
+
+				if ($negative) {
+					$text = 'минус ' . $text;
+				}
+				break;
+		}
+
+		if (!empty($decimal)) {
+			$decimal = preg_replace('#[^0-9]#', '', $decimal);
+
+			if ($currency)
+				$text .= ' лева и ' . self::Slovom(ltrim($decimal, '0')) . ' стотинки';
+			else
+				$text .= ' точка ' . self::Slovom($decimal);
+
+		}
+
+
+		return $text;
+
+	}
 }
