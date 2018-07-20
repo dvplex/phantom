@@ -32,6 +32,30 @@ class Phantom {
 		echo 'Phantom is Barking!';
 	}
 
+	public static function getFaIcons($select = false) {
+		if (session('phantom.fa_icons'))
+			return session('phantom.fa_icons');
+		$content = file_get_contents('https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/advanced-options/metadata/icons.json');
+		$json = json_decode($content);
+		$icons = [];
+
+		$n = 0;
+		foreach ($json as $icon => $value) {
+			foreach ($value->styles as $style) {
+				if (!$select)
+					$icons[] = 'fa' . substr($style, 0, 1) . ' fa-' . $icon;
+				else {
+					$icons[$n]['title'] = $icon;
+					$icons[$n]['icon'] = 'fa' . substr($style, 0, 1) . ' fa-' . $icon;
+					$n++;
+				}
+			}
+		}
+		session(['phantom.fa_icons' => $icons]);
+
+		return $icons;
+	}
+
 	public static function phantomView($id, $view, $data) {
 		$v = [];
 		$view = \View::make($view, $data);
@@ -176,8 +200,7 @@ class Phantom {
 		$ct = '';
 		if ($node->children()->count() > 0) {
 			$ct .= '<li class="site-menu-item has-sub"><a class="animsition-link" href="javascript:void(0)">';
-			if ($node->depth == 0)
-				$ct .= '<i class="site-menu-icon wb-dashboard" aria-hidden="true"></i>';
+			$ct .= '<i class="site-menu-icon ' . $node->menu_icon . '" aria-hidden="true"></i>';
 			$ct .= '<span class="site-menu-title">' . Lang::get('menu.' . $node->name) . '</span>
 							<span class="site-menu-arrow"></span>
 						</a>';
@@ -185,8 +208,7 @@ class Phantom {
 		else {
 			if ($node->route != null) {
 				$ct .= '<li class="site-menu-item "><a class="animsition-link" href="' . route($node->route, ['lang' => app()->getLocale()]) . '">';
-				if ($node->depth == 0)
-					$ct .= '<i class="site-menu-icon wb-dashboard" aria-hidden="true"></i>';
+				$ct .= '<i class="site-menu-icon ' . $node->menu_icon . '" aria-hidden="true"></i>';
 				$ct .= '<span class="site-menu-title">' . Lang::get('menu.' . $node->name) . '</span>
                             </a>';
 			}
@@ -396,7 +418,7 @@ class Phantom {
 					if (substr($int, 1, 1) == 0)
 						$add = 'и';
 					else
-						$add ='';
+						$add = '';
 					$flag = 3;
 					$text = $hundredth[$int{0}] . " $add " . self::Slovom(substr($int, 1));
 

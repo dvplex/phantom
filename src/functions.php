@@ -10,6 +10,16 @@ if (!function_exists('bark')) {
 
 }
 
+if (!function_exists('get_fa_icons')) {
+	function get_fa_icons($select = false) {
+		$phantom = app('phantom');
+
+		return $phantom::getFaIcons($select);
+
+	}
+
+}
+
 if (!function_exists('phantom_slovom')) {
 	function phantom_slovom($int, $currency=false) {
 		$phantom = app('phantom');

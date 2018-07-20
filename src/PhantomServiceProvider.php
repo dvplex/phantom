@@ -42,7 +42,7 @@ class PhantomServiceProvider extends ServiceProvider {
 	 * @return void
 	 */
 	public function register() {
-		// local only fasade test
+
 		$this->app->singleton('phantom', function () {
 			return $this->app->make('dvplex\Phantom\Classes\Phantom');
 		});
