@@ -21,13 +21,13 @@ class PhantomController extends Controller {
 
 	public function redirect(Request $request, $lang = false) {
 		if ($lang == 'login') {
-			$lang = explode('-', $request->server('HTTP_ACCEPT_LANGUAGE'));
+			$lang = preg_split('/-|,/', $request->server('HTTP_ACCEPT_LANGUAGE'));
 			$lang = $lang[0];
 
 			return redirect('/' . $lang . '/login/');
 		}
 		if (!$lang || !in_array($lang, config('app.locales'))){
-			$lang = explode('-', $request->server('HTTP_ACCEPT_LANGUAGE'));
+			$lang = preg_split('/-|,/', $request->server('HTTP_ACCEPT_LANGUAGE'));
 		$lang = $lang[0];
 	}
 

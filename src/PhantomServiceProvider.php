@@ -15,7 +15,6 @@ class PhantomServiceProvider extends ServiceProvider {
 	 * @return void
 	 */
 	public function boot(Router $router, Kernel $kernel) {
-
 		Phantom::registerRoutes();
 
 		Phantom::registerConfig();
