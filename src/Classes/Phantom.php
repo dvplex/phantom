@@ -196,43 +196,72 @@ class Phantom {
 		return redirect($str);
 	}
 
-	protected static function renderNode($node) {
+	protected static function renderNode($node, $type = false) {
 		$ct = '';
-		if ($node->children()->count() > 0) {
-			$ct .= '<li class="site-menu-item has-sub"><a class="animsition-link" href="javascript:void(0)">';
-			$ct .= '<i class="site-menu-icon ' . $node->menu_icon . '" aria-hidden="true"></i>';
-			$ct .= '<span class="site-menu-title">' . Lang::get('menu.' . $node->name) . '</span>
+		switch ($type) {
+			case 'reorder':
+				if ($node->children()->count() > 0) {
+					$ct .= '<li class="dd-item" data-id="'.$node->id.'" data-name="'.$node->name.'">';
+					$ct .= '<button class="dd-collapse" data-action="collapse" type="button">Collapse</button>
+					<button class="dd-expand" data-action="expand" type="button">Expand</button>
+					<span class="dd-handle"><i class="site-menu-icon ' . $node->menu_icon . '" aria-hidden="true"></i>' . Lang::get('menu.' . $node->name) . '</span>';
+				}
+				else {
+					if ($node->id != null) {
+						$ct .= '<li class="dd-item" data-id="' . $node->id . '" data-name="'.$node->name.'">';
+						$ct .= '<span class="dd-handle"><i class="site-menu-icon ' . $node->menu_icon . '" aria-hidden="true"></i>' . Lang::get('menu.' . $node->name) . '</span>';
+					}
+				}
+
+				if ($node->children()->count() > 0) {
+					$ct .= '<ul class="dd-list">';
+					foreach ($node->children as $child)
+						$ct .= self::renderNode($child, 'reorder');
+					$ct .= "</ul>";
+				}
+
+				$ct .= "</li>";
+
+				return $ct;
+				break;
+			case 'side':
+			default:
+				if ($node->children()->count() > 0) {
+					$ct .= '<li class="site-menu-item has-sub"><a class="animsition-link" href="javascript:void(0)">';
+					$ct .= '<i class="site-menu-icon ' . $node->menu_icon . '" aria-hidden="true"></i>';
+					$ct .= '<span class="site-menu-title">' . Lang::get('menu.' . $node->name) . '</span>
 							<span class="site-menu-arrow"></span>
 						</a>';
-		}
-		else {
-			if ($node->route != null) {
-				$ct .= '<li class="site-menu-item "><a class="animsition-link" href="' . route($node->route, ['lang' => app()->getLocale()]) . '">';
-				$ct .= '<i class="site-menu-icon ' . $node->menu_icon . '" aria-hidden="true"></i>';
-				$ct .= '<span class="site-menu-title">' . Lang::get('menu.' . $node->name) . '</span>
+				}
+				else {
+					if ($node->route != null) {
+						$ct .= '<li class="site-menu-item "><a class="animsition-link" href="' . route($node->route, ['lang' => app()->getLocale()]) . '">';
+						$ct .= '<i class="site-menu-icon ' . $node->menu_icon . '" aria-hidden="true"></i>';
+						$ct .= '<span class="site-menu-title">' . Lang::get('menu.' . $node->name) . '</span>
                             </a>';
-			}
+					}
+				}
+
+				if ($node->children()->count() > 0) {
+					$ct .= '<ul class="site-menu-sub">';
+					foreach ($node->children as $child)
+						$ct .= self::renderNode($child);
+					$ct .= "</ul>";
+				}
+
+				$ct .= "</li>";
+
+				return $ct;
+				break;
 		}
-
-		if ($node->children()->count() > 0) {
-			$ct .= '<ul class="site-menu-sub">';
-			foreach ($node->children as $child)
-				$ct .= self::renderNode($child);
-			$ct .= "</ul>";
-		}
-
-		$ct .= "</li>";
-
-		return $ct;
 	}
 
-	public static function menu($type = false) {
+	public static function menu($type = false, $name = false) {
 
 		switch ($type) {
-			case "side":
-			default:
+			case "reorder":
 				$content = '';
-				if (!$type)
+				if (!$name)
 					$menus = \Modules\Menus\Entities\Menu::with('nodes', 'roles', 'permissions')
 						->whereHas('roles', function ($q) {
 							$roles = \Auth::user()->roles->pluck('name')->toArray();
@@ -245,14 +274,56 @@ class Phantom {
 						->first();
 				else
 					$menus = \Modules\Menus\Entities\Menu::with('nodes', 'roles', 'permissions')
-						->where('name', $type)
+						->where('name', $name)
 						->whereHas('roles', function ($q) {
 							$q->whereIn('name', \Auth::user()->roles->pluck('name')->toArray());
+						})
+						->orWhereHas('permissions', function ($q) {
+							$pms = \Auth::user()->permissions->pluck('name')->toArray();
+							$q->whereIn('name', $pms);
 						})
 						->first();
 				if ($menus == null)
 					return;
-				$nodes = $menus->nodes()->get();
+				$nodes = $menus->nodes()->orderBy('menu_pos','asc')->get();
+				$menu = Menu::new();
+				$menu->addClass('dd-list');
+				$menu->addItemClass('dd-item');
+				foreach ($nodes as $node)
+					if ($node->parent_id == null&&$node->id)
+						$content .= self::renderNode($node, 'reorder');
+				$menu->html($content);
+
+				return $menu;
+				break;
+			case "side":
+			default:
+				$content = '';
+				if (!$name)
+					$menus = \Modules\Menus\Entities\Menu::with('nodes', 'roles', 'permissions')
+						->whereHas('roles', function ($q) {
+							$roles = \Auth::user()->roles->pluck('name')->toArray();
+							$q->whereIn('name', $roles);
+						})
+						->orWhereHas('permissions', function ($q) {
+							$pms = \Auth::user()->permissions->pluck('name')->toArray();
+							$q->whereIn('name', $pms);
+						})
+						->first();
+				else
+					$menus = \Modules\Menus\Entities\Menu::with('nodes', 'roles', 'permissions')
+						->where('name', $name)
+						->whereHas('roles', function ($q) {
+							$q->whereIn('name', \Auth::user()->roles->pluck('name')->toArray());
+						})
+						->orWhereHas('permissions', function ($q) {
+							$pms = \Auth::user()->permissions->pluck('name')->toArray();
+							$q->whereIn('name', $pms);
+						})
+						->first();
+				if ($menus == null)
+					return;
+				$nodes = $menus->nodes()->orderBy('menu_pos','asc')->get();
 				$menu = Menu::new();
 				$menu->addClass('site-menu');
 				$menu->addItemClass('site-menu-item');
