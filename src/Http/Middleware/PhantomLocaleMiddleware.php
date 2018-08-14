@@ -20,15 +20,40 @@ class PhantomLocaleMiddleware {
 	}
 
 	public function handle(Request $request, Closure $next) {
-		if ($request->lang) {
-			if (in_array($request->lang, config('app.locales'))) {
-				$lang = $request->lang;
+		if ($request->route('lang')) {
+			if (in_array($request->route('lang'), config('app.locales'))) {
+				$lang = $request->route('lang');
 				\Session::put('locale', $lang);;
-				\App::setLocale($lang);
+				app()->setLocale($lang);
 				Carbon::setLocale($lang);
 			}
-			else
-				return redirect(config('app.locales.0') . '/' . preg_replace('/^\/[a-z]{1,}\//', '', request()->getRequestUri()));
+			else {
+				if (session('locale'))
+					$lang = session('locale');
+				else
+					$lang = config('app.locales.0');
+				$request->route()->setParameter('lang', $lang);
+				if (preg_match('/^\/([a-z]){2}\//', $request->getRequestUri()))
+					return redirect($lang . '/' . preg_replace('/^\/([a-z]){2}\//', '', $request->getRequestUri()));
+				else
+					return redirect($lang . $request->getRequestUri());
+			}
+		}
+		else {
+			if (session('locale'))
+				$lang = session('locale');
+			else {
+				$lang = preg_split('/-|,/', $request->server('HTTP_ACCEPT_LANGUAGE'));
+				$lang = $lang[0];
+			}
+			if (!in_array($lang, config('app.locales')))
+				$lang = config('app.locales.0');
+			\Session::put('locale', $lang);;
+			app()->setLocale($lang);
+			Carbon::setLocale($lang);
+			$request->route()->setParameter('lang', $lang);
+			if ($request->getRequestUri() == '/')
+				return redirect($lang . '/' . $request->getRequestUri());
 		}
 
 

@@ -1,6 +1,8 @@
 <?php
 
-Route::get('/{locale?}', 'dvplex\Phantom\Http\Controllers\PhantomController@redirect')->name('phantom.main');
+Route::group(['middleware' => ['web','phantom_locale'],'namespace'=>'App\Http\Controllers'], function () {
+	Route::get('/{lang?}', 'HomeController@index')->name('frontpage.main');
+});
 Route::get('locale/{loc}', 'dvplex\Phantom\Http\Controllers\PhantomController@setLocale')->name('phantom.locale.path');
 Route::get('timezones/{timezone?}',
 	'dvplex\Phantom\Http\Controllers\PhantomController@index')->name('timezone');

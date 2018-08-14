@@ -30,7 +30,6 @@ class PhantomController extends Controller {
 			$lang = preg_split('/-|,/', $request->server('HTTP_ACCEPT_LANGUAGE'));
 		$lang = $lang[0];
 	}
-
 		return redirect($lang . '/' . config('phantom.modules.main'));
 	}
 
