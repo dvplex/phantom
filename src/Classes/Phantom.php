@@ -201,14 +201,14 @@ class Phantom {
 		switch ($type) {
 			case 'reorder':
 				if ($node->children()->count() > 0) {
-					$ct .= '<li class="dd-item" data-id="'.$node->id.'" data-name="'.$node->name.'">';
+					$ct .= '<li class="dd-item" data-id="' . $node->id . '" data-name="' . $node->name . '">';
 					$ct .= '<button class="dd-collapse" data-action="collapse" type="button">Collapse</button>
 					<button class="dd-expand" data-action="expand" type="button">Expand</button>
 					<span class="dd-handle"><i class="site-menu-icon ' . $node->menu_icon . '" aria-hidden="true"></i>' . Lang::get('menu.' . $node->name) . '</span>';
 				}
 				else {
 					if ($node->id != null) {
-						$ct .= '<li class="dd-item" data-id="' . $node->id . '" data-name="'.$node->name.'">';
+						$ct .= '<li class="dd-item" data-id="' . $node->id . '" data-name="' . $node->name . '">';
 						$ct .= '<span class="dd-handle"><i class="site-menu-icon ' . $node->menu_icon . '" aria-hidden="true"></i>' . Lang::get('menu.' . $node->name) . '</span>';
 					}
 				}
@@ -257,40 +257,31 @@ class Phantom {
 	}
 
 	public static function menu($type = false, $name = false) {
-
+		$roles = \Auth::user()->roles->pluck('name')->toArray();
+		$pms = \Auth::user()->permissions->pluck('name')->toArray();
 		switch ($type) {
 			case "reorder":
 				$content = '';
-				if (!$name)
-					$menus = \Modules\Menus\Entities\Menu::with('nodes', 'roles', 'permissions')
-						->whereHas('roles', function ($q) {
-							$roles = \Auth::user()->roles->pluck('name')->toArray();
-							$q->whereIn('name', $roles);
-						})
-						->orWhereHas('permissions', function ($q) {
-							$pms = \Auth::user()->permissions->pluck('name')->toArray();
+				$menus = \Modules\Menus\Entities\Menu::with('nodes', 'roles', 'permissions');
+				if ($name)
+					$menus->where('name', $name);
+				if (!empty($roles) || !empty($pms)) {
+					$menus->whereHas('roles', function ($q) use ($roles) {
+						$q->whereIn('name', $roles);
+					})
+						->orWhereHas('permissions', function ($q) use ($pms) {
 							$q->whereIn('name', $pms);
-						})
-						->first();
-				else
-					$menus = \Modules\Menus\Entities\Menu::with('nodes', 'roles', 'permissions')
-						->where('name', $name)
-						->whereHas('roles', function ($q) {
-							$q->whereIn('name', \Auth::user()->roles->pluck('name')->toArray());
-						})
-						->orWhereHas('permissions', function ($q) {
-							$pms = \Auth::user()->permissions->pluck('name')->toArray();
-							$q->whereIn('name', $pms);
-						})
-						->first();
+						});
+				}
+				$menus = $menus->first();
 				if ($menus == null)
 					return;
-				$nodes = $menus->nodes()->orderBy('menu_pos','asc')->get();
+				$nodes = $menus->nodes()->orderBy('menu_pos', 'asc')->get();
 				$menu = Menu::new();
 				$menu->addClass('dd-list');
 				$menu->addItemClass('dd-item');
 				foreach ($nodes as $node)
-					if ($node->parent_id == null&&$node->id)
+					if ($node->parent_id == null && $node->id)
 						$content .= self::renderNode($node, 'reorder');
 				$menu->html($content);
 
@@ -299,31 +290,21 @@ class Phantom {
 			case "side":
 			default:
 				$content = '';
-				if (!$name)
-					$menus = \Modules\Menus\Entities\Menu::with('nodes', 'roles', 'permissions')
-						->whereHas('roles', function ($q) {
-							$roles = \Auth::user()->roles->pluck('name')->toArray();
-							$q->whereIn('name', $roles);
-						})
-						->orWhereHas('permissions', function ($q) {
-							$pms = \Auth::user()->permissions->pluck('name')->toArray();
-							$q->whereIn('name', $pms);
-						})
-						->first();
-				else
-					$menus = \Modules\Menus\Entities\Menu::with('nodes', 'roles', 'permissions')
-						->where('name', $name)
-						->whereHas('roles', function ($q) {
-							$q->whereIn('name', \Auth::user()->roles->pluck('name')->toArray());
-						})
-						->orWhereHas('permissions', function ($q) {
-							$pms = \Auth::user()->permissions->pluck('name')->toArray();
-							$q->whereIn('name', $pms);
-						})
-						->first();
+				$menus = \Modules\Menus\Entities\Menu::with('nodes', 'roles', 'permissions');
+				if ($name)
+					$menus->where('name', $name);
+				if (!empty($roles) || !empty($pms)) {
+					$menus->whereHas('roles', function ($q) use ($roles) {
+						$q->whereIn('name', $roles);
+					})
+					->orWhereHas('permissions', function ($q) use ($pms) {
+						$q->whereIn('name', $pms);
+					});
+				}
+				$menus = $menus->first();
 				if ($menus == null)
 					return;
-				$nodes = $menus->nodes()->orderBy('menu_pos','asc')->get();
+				$nodes = $menus->nodes()->orderBy('menu_pos', 'asc')->get();
 				$menu = Menu::new();
 				$menu->addClass('site-menu');
 				$menu->addItemClass('site-menu-item');
