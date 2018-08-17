@@ -3,6 +3,7 @@
 namespace dvplex\Phantom\Classes;
 
 use dvplex\Phantom\Http\Middleware\PhantomLocaleMiddleware;
+use dvplex\Phantom\Http\Middleware\PhantomAuthBasicOnceMiddleware;
 use function foo\func;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
@@ -123,6 +124,7 @@ class Phantom {
 		$router = app()->make('router');
 		$router->aliasMiddleware('phantom', PhantomMiddleware::class);
 		$router->aliasMiddleware('phantom_locale', PhantomLocaleMiddleware::class);
+		$router->aliasMiddleware('phantom_auth_basic_once', PhantomAuthBasicOnceMiddleware::class);
 		$router->aliasMiddleware('role', RoleMiddleware::class);
 		$router->aliasMiddleware('permission', PermissionMiddleware::class);
 		if (!class_exists('Modules\Routes\Entities\Route') || !Schema::hasTable('routes'))

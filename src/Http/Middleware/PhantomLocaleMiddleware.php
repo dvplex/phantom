@@ -33,8 +33,8 @@ class PhantomLocaleMiddleware {
 				else
 					$lang = config('app.locales.0');
 				$request->route()->setParameter('lang', $lang);
-				if (preg_match('/^\/([a-z]){2}\//', $request->getRequestUri()))
-					return redirect($lang . '/' . preg_replace('/^\/([a-z]){2}\//', '', $request->getRequestUri()));
+				if (preg_match('/^\/([a-z]){2}$/', $request->getRequestUri()))
+					return redirect($lang . preg_replace('/^\/([a-z]){2}/', '', $request->getRequestUri()));
 				else
 					return redirect($lang . $request->getRequestUri());
 			}
