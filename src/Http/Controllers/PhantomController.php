@@ -11,26 +11,12 @@ use Illuminate\Pagination\Paginator;
 
 class PhantomController extends Controller {
 
-	public function index($timezone = NULL) {
+	public function index($lang,$timezone = NULL) {
 		$current_time = ($timezone)
 			? Carbon::now(str_replace('-', '/', $timezone))
 			: Carbon::now();
 
 		return view('phantom::time', compact('current_time'));
-	}
-
-	public function redirect(Request $request, $lang = false) {
-		if ($lang == 'login') {
-			$lang = preg_split('/-|,/', $request->server('HTTP_ACCEPT_LANGUAGE'));
-			$lang = $lang[0];
-
-			return redirect('/' . $lang . '/login/');
-		}
-		if (!$lang || !in_array($lang, config('app.locales'))){
-			$lang = preg_split('/-|,/', $request->server('HTTP_ACCEPT_LANGUAGE'));
-		$lang = $lang[0];
-	}
-		return redirect($lang . '/' . config('phantom.modules.main'));
 	}
 
 	public function setLocale($loc) {

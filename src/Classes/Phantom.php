@@ -29,11 +29,11 @@ use Spatie\Permission\Middlewares\RoleMiddleware;
 
 class Phantom {
 
-	public static function bark() {
+	public function bark() {
 		echo 'Phantom is Barking!';
 	}
 
-	public static function getFaIcons($select = false) {
+	public function get_fa_icons($select = false) {
 		if (session('phantom.fa_icons'))
 			return session('phantom.fa_icons');
 		$content = file_get_contents('https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/advanced-options/metadata/icons.json');
@@ -57,7 +57,7 @@ class Phantom {
 		return $icons;
 	}
 
-	public static function phantomView($id, $view, $data) {
+	public function phantom_view($id, $view, $data) {
 		$v = [];
 		$view = \View::make($view, $data);
 		$view = $view->render();
@@ -67,12 +67,13 @@ class Phantom {
 		return $v;
 	}
 
-	public static function generateSearch($id, $action) {
+	public function phantom_search($id, $action) {
 		$content = '
 			<phantom-search
 					id="' . $id . '"
 					action="' . $action . '"
 					current-page="' . session("search.{$id}.page") . '"
+					per-page="' . session("search.{$id}.perPage") . '"
 					search-id="' . session("search.{$id}.query") . '"
 					order-by-fields="' . htmlspecialchars(json_encode(session("search.{$id}.orderFields"))) . '"
 					order-by-id="' . session("search.{$id}.order.name") . '"
@@ -84,21 +85,27 @@ class Phantom {
 		return $content;
 	}
 
-	public static function generateLink($path, $args = []) {
+	public function phantom_link($path, $args = []) {
 		$args['lang'] = app()->getLocale();
 
 		return route('phantom.modules.' . $path, $args);
 	}
 
-	public static function eventsListen() {
+	public function eventsListen() {
 		Event::listen('phantom.*', function ($eventName, $data) {
 			$eventName = preg_replace('/phantom\./', '', $eventName);
+			$method = new \ReflectionMethod(Phantom::class, $eventName);
 
-			return Phantom::$eventName($data);
+			return $method->invokeArgs(NULL, $data);
+
 		});
 	}
 
-	public static function registerAliases() {
+	public function test($a, $b) {
+		dd($a . ' ' . $b);
+	}
+
+	public function registerAliases() {
 		$loader = AliasLoader::getInstance();
 		$loader->alias('Phantom', Phantom::class);
 		$loader->alias('PhantomEvent', PhantomEvent::class);
@@ -106,7 +113,7 @@ class Phantom {
 		return;
 	}
 
-	public static function registerConfig() {
+	public function registerConfig() {
 		$r = phantom_get_routes();
 		config(['phantom.routes' => $r]);
 		config(['app.locales' => ['en', 'bg']]);
@@ -120,20 +127,25 @@ class Phantom {
 		return;
 	}
 
-	public static function registerRoutes($data = false) {
+	public function registerRoutes($data = false) {
 		$router = app()->make('router');
-		$router->aliasMiddleware('phantom', PhantomMiddleware::class);
-		$router->aliasMiddleware('phantom_locale', PhantomLocaleMiddleware::class);
+		$router->pushMiddlewareToGroup('web', PhantomLocaleMiddleware::class);
+
 		$router->aliasMiddleware('phantom_auth_basic_once', PhantomAuthBasicOnceMiddleware::class);
 		$router->aliasMiddleware('role', RoleMiddleware::class);
 		$router->aliasMiddleware('permission', PermissionMiddleware::class);
 		if (!class_exists('Modules\Routes\Entities\Route') || !Schema::hasTable('routes'))
 			return;
-		if (in_array('Spatie\Permission\Traits\HasRoles', class_uses(Routes::class)))
-			$routes = Routes::with('module', 'middlewares', 'roles', 'permissions')->get();
+		if (!config('phantom.regroutes')) {
+			if (in_array('Spatie\Permission\Traits\HasRoles', class_uses(Routes::class)))
+				$routes = Routes::with('http_methods', 'module', 'middlewares', 'roles', 'permissions')->get();
+			else
+				$routes = Routes::with('http_methods', 'module', 'middlewares')->get();
+			config(['phantom.regroutes' => serialize($routes)]);
+		}
 		else
-			$routes = Routes::with('module', 'middlewares')->get();
-		if ($routes) {
+			$routes = unserialize(config('phantom.regroutes'));
+		if (count($routes)) {
 			foreach ($routes as $route) {
 				$middleware = $route->middlewares->pluck('name')->toArray();
 				if (isset($route->roles) && count($route->roles)) {
@@ -147,9 +159,11 @@ class Phantom {
 				$module_name = $route->module->module_name;
 				$router->group(['middleware' => $middleware, 'namespace' => '\\Modules\\' . $module_name . '\\Http\\Controllers'], function ($router) use ($route, $module_name) {
 					$path = $route->route;
-					$requestMethod = $route->httpMethod;
-					$controllerMethod = $route->controllerMethod;
-					$router->$requestMethod($path, $module_name . 'Controller@' . $controllerMethod)->name(mb_strtolower('phantom.modules.' . $module_name . '@' . $controllerMethod));
+					foreach ($route->http_methods as $http_method) {
+						$requestMethod = $http_method->name;
+						$controllerMethod = $route->controllerMethod;
+						$router->$requestMethod($path, $module_name . 'Controller@' . $controllerMethod)->name(mb_strtolower('phantom.modules.' . $module_name . '@' . $controllerMethod));
+					}
 				});
 			}
 		}
@@ -157,11 +171,11 @@ class Phantom {
 		return;
 	}
 
-	public static function phantom_module_path($module) {
+	public function phantom_module_path($module) {
 		return join("<br>", config('phantom.routes.modules.' . strtolower($module . '.path')));
 	}
 
-	public static function phantom_get_routes() {
+	public function phantom_get_routes() {
 
 		$routes = $rn = [];
 		$collection = Route::getRoutes();
@@ -172,13 +186,12 @@ class Phantom {
 				if ($route->named('phantom.modules.*')) {
 					$name = preg_replace('/modules\./', '', $name);
 					$routes['modules'][$name]['methods'][$route->getActionMethod()]['path'] = $route->uri();
-					$routes['modules'][$name]['methods'][$route->getActionMethod()]['path'] = $route->uri();
-					$routes['modules'][$name]['methods'][$route->getActionMethod()]['request'][] = $route->methods();
-					$routes['modules'][$name]['methods'][$route->getActionMethod()]['action'][] = $route->getAction();
+					foreach ($route->methods as $rm) {
+						$routes['modules'][$name]['methods'][$route->getActionMethod()]['requests'][$rm]['action'] = $route->getAction();
+					}
 				}
 				else {
 					$routes[$name]['path'][] = $route->uri();
-					$routes[$name]['methods'] = $route->methods();
 					$routes[$name]['methods'] = $route->methods();
 					$routes[$name]['action'] = $route->getAction();
 					$routes[$name]['action']['controllerMethod'] = $route->getActionMethod();
@@ -190,7 +203,7 @@ class Phantom {
 		return $routes;
 	}
 
-	public static function phantom_route($loc) {
+	public function phantom_route($loc) {
 		\Session::put('locale', $loc);
 		$str = url()->previous();
 		$str = preg_replace('/\/[a-z]{2}\//', "/{$loc}/", $str, 1);
@@ -258,7 +271,7 @@ class Phantom {
 		}
 	}
 
-	public static function menu($type = false, $name = false) {
+	public function menu($type = false, $name = false) {
 		$roles = \Auth::user()->roles->pluck('name')->toArray();
 		$pms = \Auth::user()->permissions->pluck('name')->toArray();
 		switch ($type) {
@@ -299,9 +312,9 @@ class Phantom {
 					$menus->whereHas('roles', function ($q) use ($roles) {
 						$q->whereIn('name', $roles);
 					})
-					->orWhereHas('permissions', function ($q) use ($pms) {
-						$q->whereIn('name', $pms);
-					});
+						->orWhereHas('permissions', function ($q) use ($pms) {
+							$q->whereIn('name', $pms);
+						});
 				}
 				$menus = $menus->first();
 				if ($menus == null)
@@ -324,7 +337,7 @@ class Phantom {
 		}
 	}
 
-	public static function list_modules() {
+	public function list_modules() {
 		foreach (app('modules')->all() as $module) {
 			echo $module->getName() . ' ' . $module->enabled() . ' ' . $module->getPath() . '<br>';
 		}
@@ -381,7 +394,7 @@ class Phantom {
 		file_put_contents($path . '/Resources/assets/js/index.js', '');
 	}
 
-	public static function module_add($request) {
+	public function module_add($request) {
 		$module_name = studly_case($request->module_name);
 		$modules = new Modules();
 		$modules->module_name = $module_name;
@@ -391,7 +404,7 @@ class Phantom {
 		self::generateFiles($module_name);
 	}
 
-	public static function module_edit($request) {
+	public function module_edit($request) {
 		$module_name = studly_case($request->module_name);
 		$modules = \Modules\Modules\Entities\Module::find($request->id);
 		$modules->module_name = $module_name;
@@ -400,7 +413,7 @@ class Phantom {
 		return $modules->save();
 	}
 
-	public static function Slovom($int, $currency = false) {
+	public function phantom_slovom($int, $currency = false) {
 		if ($currency)
 			$two = 'два';
 		else
@@ -540,4 +553,5 @@ class Phantom {
 		return $text;
 
 	}
+
 }

@@ -3,6 +3,7 @@
 namespace dvplex\Phantom\Http\Middleware;
 
 use Closure;
+use function Faker\Provider\pt_BR\check_digit;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Factory as Auth;
@@ -18,8 +19,8 @@ class PhantomLocaleMiddleware {
 
 	public function __construct(Auth $auth) {
 	}
-
 	public function handle(Request $request, Closure $next) {
+		config(['phantom.modules.current' => preg_replace(['/phantom\.modules\./', '/\@\S+/'], '', $request->route()->getName())]);
 		if ($request->route('lang')) {
 			if (in_array($request->route('lang'), config('app.locales'))) {
 				$lang = $request->route('lang');
@@ -55,7 +56,6 @@ class PhantomLocaleMiddleware {
 			if ($request->getRequestUri() == '/')
 				return redirect($lang . '/' . $request->getRequestUri());
 		}
-
 
 		return $next($request);
 	}

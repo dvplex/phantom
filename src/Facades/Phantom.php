@@ -4,7 +4,7 @@ namespace dvplex\Phantom\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class PhantomFacade extends Facade {
+class Phantom extends Facade {
 	protected static function getFacadeAccessor() {
 		return 'phantom';
 	}

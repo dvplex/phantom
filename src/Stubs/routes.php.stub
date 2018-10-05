@@ -1,9 +1,12 @@
 <?php
 
-Route::group(['middleware' => ['web','phantom','phantom_locale'],  'namespace' => '$MODULE_NAMESPACE$\$STUDLY_NAME$\Http\Controllers'], function () {
-	Route::get('/$LOWER_NAME$',function (){
-		return redirect(app()->getLocale().'/$LOWER_NAME$');
-	})->name('phantom.modules.$LOWER_NAME$');
+Route::group(['middleware' => ['web'],  'namespace' => '$MODULE_NAMESPACE$\$STUDLY_NAME$\Http\Controllers'], function () {
 	Route::get('/{lang?}/$LOWER_NAME$', '$STUDLY_NAME$Controller@index')->name('phantom.modules.$LOWER_NAME$@index');
+	Route::get('/{lang?}/$LOWER_NAME$/search/', '$STUDLY_NAME$Controller@index')->name('phantom.modules.$LOWER_NAME$@search');
+	Route::post('/{lang?}/$LOWER_NAME$/add/', '$STUDLY_NAME$Controller@store')->name('phantom.modules.$LOWER_NAME$@store');
+	Route::post('/{lang?}/$LOWER_NAME$/edit/', '$STUDLY_NAME$Controller@update')->name('phantom.modules.$LOWER_NAME$@update');
+	Route::get('/{lang?}/$LOWER_NAME$/add/{view}/', '$STUDLY_NAME$Controller@create')->name('phantom.modules.$LOWER_NAME$@create');
+	Route::get('/{lang?}/$LOWER_NAME$/delete/', '$STUDLY_NAME$Controller@destroy')->name('phantom.modules.$LOWER_NAME$@destroy');
+
 });
 

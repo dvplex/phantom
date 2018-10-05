@@ -14,8 +14,6 @@ class PhantomAuthBasicOnceMiddleware {
 	 * @return mixed
 	 */
 	public function handle(Request $request, \Closure $next) {
-		$response = $next($request);
-		$exception = $response;
 		return \Illuminate\Support\Facades\Auth::onceBasic('username') ?: $next($request);
 	}
 }

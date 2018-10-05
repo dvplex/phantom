@@ -1,105 +1,60 @@
 <?php
+function make_helper($function, $args = false) {
+	$phantom = \dvplex\Phantom\Facades\Phantom::class;
+	if (!function_exists($function)) {
+		$ar = $lar = $v = '';
+		if (is_array($args)) {
+			foreach ($args as $a => $val) {
+				$la = $a;
+				if ($val && !is_numeric($a))
+					if ($val != '[]' && $val != 'false' && !is_numeric($val))
+						$v = ' = "' . $val . '"';
+					else
+						$v = ' = ' . $val;
+				else {
+					$v = '';
+				}
+				if (is_numeric($a))
+					$la = $val;
+				$ar != "" && $ar .= ',';
+				$ar .= '$' . $la . $v;
+				$lar != "" && $lar .= ',';
+				$lar .= '$' . $la;
+			}
 
-if (!function_exists('bark')) {
-	function bark() {
-		$phantom = app('phantom');
-
-		return $phantom::bark();
-
+		}
+		eval("function {$function} ({$ar}) {
+				return {$phantom}::{$function} ({$lar});
+				}");
 	}
 
 }
 
-if (!function_exists('get_fa_icons')) {
-	function get_fa_icons($select = false) {
-		$phantom = app('phantom');
+make_helper('bark');
 
-		return $phantom::getFaIcons($select);
+make_helper('get_fa_icons', ['select' => 'false']);
 
-	}
+make_helper('phantom_slovom', ['int', 'currency' => 'false']);
 
-}
+make_helper('phantom_link', ['path' => '', 'args' => '[]']);
 
-if (!function_exists('phantom_slovom')) {
-	function phantom_slovom($int, $currency=false) {
-		$phantom = app('phantom');
+make_helper('phantom_view', ['id', 'view', 'data']);
 
-		return $phantom::Slovom($int, $currency);
+make_helper('phantom_search', ['id', 'action']);
 
-	}
+make_helper('phantom_module_path', ['module']);
 
-}
+make_helper('phantom_get_routes');
 
-if (!function_exists('phantom_link')) {
-	function phantom_link($path, $args = []) {
-		$phantom = app('phantom');
-
-		return $phantom::generateLink($path, $args);
-
-	}
-
-}
-
-if (!function_exists('phantom_view')) {
-	function phantom_view($id, $view, $data) {
-		$phantom = app('phantom');
-
-		return $phantom::phantomView($id, $view, $data);
-
-	}
-
-}
-
-if (!function_exists('phantom_search')) {
-	function phantom_search($id, $action) {
-		$phantom = app('phantom');
-
-		return $phantom::generateSearch($id, $action);
-
-	}
-
-}
-
-if (!function_exists('phantom_module_path')) {
-	function phantom_module_path($module) {
-		$phantom = app('phantom');
-
-		return $phantom::phantom_module_path($module);
-
-	}
-
-}
-
-if (!function_exists('phantom_get_routes')) {
-	function phantom_get_routes() {
-		$phantom = app('phantom');
-
-		return $phantom::phantom_get_routes();
-
-	}
-
-}
+make_helper('phantom_route', ['loc']);
 
 if (!function_exists('phantom')) {
 	function phantom() {
-		$phantom = app('phantom');
-
 		return new \dvplex\Phantom\Classes\Phantom();
-
 	}
 
 }
 
-if (!function_exists('route_translated')) {
-
-	function phantom_route($loc) {
-		$phantom = app('phantom');
-
-		return $phantom::phantom_route($loc);
-
-	}
-
-}
 
 if (!function_exists('mb_ucfirst')) {
 	function mb_ucfirst($string, $encoding = 'UTF-8') {
@@ -111,4 +66,13 @@ if (!function_exists('mb_ucfirst')) {
 	}
 
 }
+function get_string_between($string, $start, $end) {
+	$string = ' ' . $string;
+	$ini = strpos($string, $start);
+	if ($ini == 0)
+		return '';
+	$ini += strlen($start);
+	$len = strpos($string, $end, $ini) - $ini;
 
+	return substr($string, $ini, $len);
+}

@@ -3,9 +3,10 @@
 namespace dvplex\Phantom;
 
 use App\Http\Kernel;
-use dvplex\Phantom\Classes\Phantom;
+use dvplex\Phantom\Facades\Phantom;
+use dvplex\Phantom\Classes\PhantomValidator;
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Routing\Router;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 
 class PhantomServiceProvider extends ServiceProvider {
@@ -15,11 +16,13 @@ class PhantomServiceProvider extends ServiceProvider {
 	 * @return void
 	 */
 	public function boot(Router $router, Kernel $kernel) {
+
+		Phantom::registerAliases();
+
 		Phantom::registerRoutes();
 
 		Phantom::registerConfig();
 
-		Phantom::registerAliases();
 
 		Phantom::eventsListen();
 
@@ -29,9 +32,7 @@ class PhantomServiceProvider extends ServiceProvider {
 			__DIR__ . '/resources/views' => base_path('resources/views/dvplex/phantom'),
 		]);
 
-		Validator::extend('without_spaces', function ($attr, $value) {
-			return preg_match('/^\S*$/u', $value);
-		});
+		PhantomValidator::boot();
 
 	}
 
@@ -41,6 +42,12 @@ class PhantomServiceProvider extends ServiceProvider {
 	 * @return void
 	 */
 	public function register() {
+		// local only helper test
+
+		if (file_exists($file = __DIR__ . '/functions.php')) {
+			require $file;
+		}
+
 		$this->app->singleton('phantom', function () {
 			return $this->app->make('dvplex\Phantom\Classes\Phantom');
 		});
@@ -51,6 +58,8 @@ class PhantomServiceProvider extends ServiceProvider {
 			$this->commands([
 				Commands\phantom::class,
 				Commands\phantomUpdate::class,
+				Commands\PhantomForm::class,
+				Commands\PhantomImapGet::class,
 			]);
 
 		}
