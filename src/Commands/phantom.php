@@ -35,17 +35,17 @@ class phantom extends Command {
 	 */
 	protected function dbsetup() {
 		$db = [];
-		$db['name'] = $this->ask('Please enter database name:');
-		$db['user'] = $this->ask('Please enter username for the database:');
-		$db['pass'] = $this->ask('Please enter database password:');
+		$db['name'] = $this->ask('Please enter database name');
+		$db['user'] = $this->ask('Please enter username for the database');
+		$db['pass'] = $this->ask('Please enter database password');
 
 		$this->info('Database name: ' . $db['name']);
 		$this->info('Database username: ' . $db['user']);
 		$this->info('Database password: ' . $db['pass']);
 		if ($this->confirm('Is this info correct?')) {
 			shell_exec("sed -i -e 's/DB_DATABASE=.*$/DB_DATABASE={$db['name']}/g' .env");
-			shell_exec("sed -i -e 's/DB_USERNAME=.*$/DB_DATABASE={$db['user']}/g' .env");
-			shell_exec("sed -i -e 's/DB_PASSWORD=.*$/DB_DATABASE={$db['pass']}/g' .env");
+			shell_exec("sed -i -e 's/DB_USERNAME=.*$/DB_USERNAME={$db['user']}/g' .env");
+			shell_exec("sed -i -e 's/DB_PASSWORD=.*$/DB_PASSWORD={$db['pass']}/g' .env");
 			return true;
 		}
 		else
