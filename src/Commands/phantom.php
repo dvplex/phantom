@@ -40,8 +40,8 @@ class phantom extends Command {
 		$db['pass'] = $this->ask('Please enter database password:');
 
 		$this->info('Database name: ' . $db['name']);
-		$this->info('Database username: ' . $db['name']);
-		$this->info('Database password: ' . $db['password']);
+		$this->info('Database username: ' . $db['user']);
+		$this->info('Database password: ' . $db['pass']);
 		if ($this->confirm('Is this info correct?')) {
 			shell_exec("sed -i -e 's/DB_DATABASE=.*$/DB_DATABASE={$db['name']}/g' .env");
 			shell_exec("sed -i -e 's/DB_USERNAME=.*$/DB_DATABASE={$db['user']}/g' .env");
