@@ -46,6 +46,7 @@ class phantom extends Command {
 			shell_exec("sed -i -e 's/DB_DATABASE=.*$/DB_DATABASE={$db['name']}/g' .env");
 			shell_exec("sed -i -e 's/DB_USERNAME=.*$/DB_DATABASE={$db['user']}/g' .env");
 			shell_exec("sed -i -e 's/DB_PASSWORD=.*$/DB_DATABASE={$db['pass']}/g' .env");
+			return true;
 		}
 		else
 			$this->dbsetup();
@@ -62,6 +63,7 @@ class phantom extends Command {
 			echo 'Wrong key!';
 			exit;
 		}
+		$this->dbsetup();
 		shell_exec('composer update');
 		shell_exec('composer require dvplex/phantom');
 		shell_exec('npm install');
