@@ -33,6 +33,18 @@ class phantom extends Command {
 	 *
 	 * @return mixed
 	 */
+
+	protected function project_name() {
+		$pname = $this->ask('Please enter Project name');
+		if ($this->confirm('Change project name to ' . $pname . '?')) {
+			shell_exec("sed -i -e 's/APP_NAME=.*$/APP_NAME={$pname}/g' .env");
+
+			return true;
+		}
+		else
+			$this->project_name();
+	}
+
 	protected function dbsetup() {
 		$db = [];
 		$db['name'] = $this->ask('Please enter database name');
@@ -46,25 +58,31 @@ class phantom extends Command {
 			shell_exec("sed -i -e 's/DB_DATABASE=.*$/DB_DATABASE={$db['name']}/g' .env");
 			shell_exec("sed -i -e 's/DB_USERNAME=.*$/DB_USERNAME={$db['user']}/g' .env");
 			shell_exec("sed -i -e 's/DB_PASSWORD=.*$/DB_PASSWORD={$db['pass']}/g' .env");
+
 			return true;
 		}
 		else
 			$this->dbsetup();
 	}
 
-	public function handle() {
+	protected function download($platform) {
 		$key = $this->secret('Please enter secret');
-		$platform = trim(shell_exec('uname -s'));
-		$this->line('Platform is '.$platform);
-		$this->dbsetup();
 		if ($platform == 'Linux')
 			$r = shell_exec("cp vendor/dvplex/phantom/src/phantom_linux . && ./phantom_linux -i -k {$key} && rm phantom_linux");
 		else
 			$r = shell_exec("cp vendor/dvplex/phantom/src/phantom . && ./phantom -i -k {$key} && rm phantom");
 		if (preg_match('/REG KEY/', $r) || !$key) {
-			echo 'Wrong key!';
-			exit;
+			$this->error('Wrong key!');
+			$this->download($platform);
 		}
+	}
+
+	public function handle() {
+		$this->project_name();
+		$platform = trim(shell_exec('uname -s'));
+		$this->line('Platform is ' . $platform);
+		$this->dbsetup();
+		$this->download($platform);
 		shell_exec('composer update');
 		shell_exec('composer require dvplex/phantom');
 		shell_exec('npm install');
