@@ -83,13 +83,13 @@ class phantom extends Command {
 		$this->line('Platform is ' . $platform);
 		$this->dbsetup();
 		$this->download($platform);
+		shell_exec('composer update');
+		shell_exec('composer require dvplex/phantom');
 		$this->info("Migrating Database");
 		sleep(1);
 		$r = shell_exec('php artisan cache:clear && php artisan migrate && php artisan db:seed --class=UsersTableSeeder');
 		print_r($r);
 		$this->info("Database migrated and seeded!");
-		shell_exec('composer update');
-		shell_exec('composer require dvplex/phantom');
 		shell_exec('npm install');
 		if ($platform == 'Linux') {
 			shell_exec('cp -t resources/js/assets/Section/ resources/js/global/Config.js resources/js/global/Plugin.js resources/js/global/Base.js resources/js/global/Component.js');
