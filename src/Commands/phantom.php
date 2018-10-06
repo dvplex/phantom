@@ -96,7 +96,7 @@ class phantom extends Command {
 		shell_exec('mv _flag-icon-list.scss node_modules/flag-icon-css/sass/');
 		$this->info("Migrating Database");
 		sleep(1);
-		$r = shell_exec('php artisan migrate && php artisan db:seed --class=UsersTableSeeder');
+		$r = shell_exec('php artisan cache:clear && php artisan migrate && php artisan db:seed --class=UsersTableSeeder');
 		print_r($r);
 		$this->info("Database migrated and seeded!");
 		shell_exec('npm run dev');
