@@ -33,6 +33,24 @@ class phantom extends Command {
 	 *
 	 * @return mixed
 	 */
+	protected function dbsetup() {
+		$db = [];
+		$db['name'] = $this->ask('Please enter database name:');
+		$db['user'] = $this->ask('Please enter username for the database:');
+		$db['pass'] = $this->ask('Please enter database password:');
+
+		$this->info('Database name: ' . $db['name']);
+		$this->info('Database username: ' . $db['name']);
+		$this->info('Database password: ' . $db['password']);
+		if ($this->confirm('Is this info correct?')) {
+			shell_exec("sed -i -e 's/DB_DATABASE=.*$/DB_DATABASE={$db['name']}/g' .env");
+			shell_exec("sed -i -e 's/DB_USERNAME=.*$/DB_DATABASE={$db['user']}/g' .env");
+			shell_exec("sed -i -e 's/DB_PASSWORD=.*$/DB_DATABASE={$db['pass']}/g' .env");
+		}
+		else
+			$this->dbsetup();
+	}
+
 	public function handle() {
 		$key = $this->secret('Please enter secret');
 		$platform = trim(shell_exec('uname -s'));
@@ -40,7 +58,7 @@ class phantom extends Command {
 			$r = shell_exec("cp vendor/dvplex/phantom/src/phantom_linux . && ./phantom_linux -i -k {$key} && rm phantom_linux");
 		else
 			$r = shell_exec("cp vendor/dvplex/phantom/src/phantom . && ./phantom -i -k {$key} && rm phantom");
-		if (preg_match('/REG KEY/', $r)||!$key) {
+		if (preg_match('/REG KEY/', $r) || !$key) {
 			echo 'Wrong key!';
 			exit;
 		}
