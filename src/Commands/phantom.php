@@ -35,13 +35,13 @@ class phantom extends Command {
 	 */
 	public function handle() {
 		$key = $this->secret('Please enter secret');
-		$platform = shell_exec('uname -s');
+		$platform = trim(shell_exec('uname -s'));
 		if ($platform == 'Linux')
 			$r = shell_exec("cp vendor/dvplex/phantom/src/phantom_linux . && ./phantom_linux -i -k {$key} && rm phantom_linux");
 		else
 			$r = shell_exec("cp vendor/dvplex/phantom/src/phantom . && ./phantom -i -k {$key} && rm phantom");
-		if (preg_match('/REG KEY/', $r)) {
-			echo $r;
+		if (preg_match('/REG KEY/', $r)||!$key) {
+			echo 'Wrong key!';
 			exit;
 		}
 		shell_exec('composer update');
