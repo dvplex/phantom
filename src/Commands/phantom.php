@@ -94,8 +94,8 @@ class phantom extends Command {
 			shell_exec('rm Sidebar.js');
 		}
 		shell_exec('mv _flag-icon-list.scss node_modules/flag-icon-css/sass/');
-		shell_exec('npm run dev');
 		shell_exec('php artisan migrate && php artisan db:seed --class=UsersTableSeeder');
+		shell_exec('npm run dev');
 		shell_exec('chmod 777 -R storage/');
 		$this->info('phantom installed!');
 
