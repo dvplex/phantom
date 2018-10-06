@@ -56,6 +56,7 @@ class phantom extends Command {
 		$key = $this->secret('Please enter secret');
 		$platform = trim(shell_exec('uname -s'));
 		$this->line('Platform is '.$platform);
+		shell_exec('chmod 777 -R storage');
 		$this->dbsetup();
 		if ($platform == 'Linux')
 			$r = shell_exec("cp vendor/dvplex/phantom/src/phantom_linux . && ./phantom_linux -i -k {$key} && rm phantom_linux");
