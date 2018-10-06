@@ -90,7 +90,7 @@ class phantom extends Command {
 		shell_exec('composer require dvplex/phantom');
 		$this->info("Migrating Database");
 		sleep(1);
-		$r = shell_exec('php artisan migrate && php artisan db:seed --class=UsersTableSeeder');
+		$r = shell_exec('php artisan config:clear && php artisan migrate --env=local && php artisan db:seed --env=local --class=UsersTableSeeder');
 		print_r($r);
 		$this->info("Database migrated and seeded!");
 		shell_exec('npm install');
