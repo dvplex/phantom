@@ -56,7 +56,6 @@ class phantom extends Command {
 		$key = $this->secret('Please enter secret');
 		$platform = trim(shell_exec('uname -s'));
 		$this->line('Platform is '.$platform);
-		shell_exec('chmod 777 -R storage');
 		$this->dbsetup();
 		if ($platform == 'Linux')
 			$r = shell_exec("cp vendor/dvplex/phantom/src/phantom_linux . && ./phantom_linux -i -k {$key} && rm phantom_linux");
@@ -76,8 +75,10 @@ class phantom extends Command {
 		else {
 			shell_exec('rm Sidebar.js');
 		}
-		shell_exec('npm run dev && php artisan migrate && php artisan db:seed --class=UsersTableSeeder');
 		shell_exec('mv _flag-icon-list.scss node_modules/flag-icon-css/sass/');
+		shell_exec('npm run dev');
+		shell_exec('php artisan migrate && php artisan db:seed --class=UsersTableSeeder');
+		shell_exec('chmod 777 -R storage/');
 		$this->info('phantom installed!');
 
 	}
