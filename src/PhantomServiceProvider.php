@@ -54,6 +54,7 @@ class PhantomServiceProvider extends ServiceProvider {
 				Commands\phantomUpdate::class,
 				Commands\PhantomForm::class,
 				Commands\PhantomImapGet::class,
+				Commands\phantomInitialSetup::class,
 			]);
 
 		}

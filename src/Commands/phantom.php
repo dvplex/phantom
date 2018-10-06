@@ -34,39 +34,6 @@ class phantom extends Command {
 	 * @return mixed
 	 */
 
-	protected function project_name() {
-		$pname = $this->ask('Please enter Project name');
-		if ($this->confirm('Change project name to ' . $pname . '?')) {
-			shell_exec("sed -i -e 's/APP_NAME=.*$/APP_NAME={$pname}/g' .env");
-
-			return true;
-		}
-		else
-			$this->project_name();
-	}
-
-	protected function dbsetup() {
-		$db = [];
-		$db['name'] = $this->ask('Please enter database name');
-		$db['user'] = $this->ask('Please enter username for the database');
-		$db['pass'] = $this->ask('Please enter database password');
-
-		$this->info('Database name: ' . $db['name']);
-		$this->info('Database username: ' . $db['user']);
-		$this->info('Database password: ' . $db['pass']);
-		if ($this->confirm('Is this info correct?')) {
-			config(['database.connections.mysql.database' => $db['name']]);
-			config(['database.connections.mysql.username' => $db['user']]);
-			config(['database.connections.mysql.password' => $db['pass']]);
-			shell_exec("sed -i -e 's/DB_DATABASE=.*$/DB_DATABASE={$db['name']}/g' .env");
-			shell_exec("sed -i -e 's/DB_USERNAME=.*$/DB_USERNAME={$db['user']}/g' .env");
-			shell_exec("sed -i -e 's/DB_PASSWORD=.*$/DB_PASSWORD={$db['pass']}/g' .env");
-
-			return true;
-		}
-		else
-			$this->dbsetup();
-	}
 
 	protected function download($platform) {
 		$key = $this->secret('Please enter secret');
@@ -81,16 +48,16 @@ class phantom extends Command {
 	}
 
 	public function handle() {
-		$this->project_name();
+		if (!is_file('phantom.setup.ready'))
+			dd('Please run first "php artisan phantom:setup"');
 		$platform = trim(shell_exec('uname -s'));
 		$this->line('Platform is ' . $platform);
-		$this->dbsetup();
 		$this->download($platform);
 		shell_exec('composer update');
 		shell_exec('composer require dvplex/phantom');
 		$this->info("Migrating Database");
 		sleep(1);
-		$r = shell_exec('php artisan config:clear && php artisan migrate --env=local && php artisan db:seed --env=local --class=UsersTableSeeder');
+		$r = shell_exec('php artisan migrate && php artisan db:seed --class=UsersTableSeeder');
 		print_r($r);
 		$this->info("Database migrated and seeded!");
 		shell_exec('npm install');
@@ -104,6 +71,7 @@ class phantom extends Command {
 		shell_exec('mv _flag-icon-list.scss node_modules/flag-icon-css/sass/');
 		shell_exec('npm run dev');
 		shell_exec('chmod 777 -R storage/');
+		shell_exec('rm phantom.setup.ready');
 		$this->info('phantom installed!');
 
 	}
