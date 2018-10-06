@@ -55,6 +55,8 @@ class phantom extends Command {
 	public function handle() {
 		$key = $this->secret('Please enter secret');
 		$platform = trim(shell_exec('uname -s'));
+		$this->line('Platform is '.$platform);
+		$this->dbsetup();
 		if ($platform == 'Linux')
 			$r = shell_exec("cp vendor/dvplex/phantom/src/phantom_linux . && ./phantom_linux -i -k {$key} && rm phantom_linux");
 		else
@@ -63,11 +65,9 @@ class phantom extends Command {
 			echo 'Wrong key!';
 			exit;
 		}
-		$this->dbsetup();
 		shell_exec('composer update');
 		shell_exec('composer require dvplex/phantom');
 		shell_exec('npm install');
-		$platform = shell_exec('uname -s');
 		if ($platform == 'Linux') {
 			shell_exec('cp -t resources/js/assets/Section/ resources/js/global/Config.js resources/js/global/Plugin.js resources/js/global/Base.js resources/js/global/Component.js');
 			shell_exec('mv Sidebar.js resources/js/assets/Section/');
