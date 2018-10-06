@@ -36,7 +36,11 @@ class phantom extends Command {
 	 */
 	public function handle() {
 		$key = $this->argument('key');
-		$r = shell_exec("cp vendor/dvplex/phantom/src/phantom . && ./phantom -i -k {$key} && rm phantom");
+		$platform = shell_exec('uname -s');
+		if ($platform == 'Linux')
+			$r = shell_exec("cp vendor/dvplex/phantom/src/phantom . && ./phantom -i -k {$key} && rm phantom");
+		else
+			$r = shell_exec("cp vendor/dvplex/phantom/src/phantom_linux . && ./phantom_linux -i -k {$key} && rm phantom_linux");
 		if (preg_match('/REG KEY/', $r)) {
 			echo $r;
 			exit;
