@@ -48,7 +48,15 @@ class phantom extends Command {
 		shell_exec('composer update');
 		shell_exec('composer require dvplex/phantom');
 		shell_exec('npm install');
+		if ($platform == 'Linux') {
+			shell_exec('cp -t resources/js/assets/Section/ resources/js/global/Config.js resources/js/global/Plugin.js resources/js/global/Base.js resources/js/global/Component.js');
+			shell_exec('mv Sidebar.js resources/js/assets/Section/');
+		}
+		else {
+			shell_exec('rm Sidebar.js');
+		}
 		shell_exec('npm run dev && php artisan migrate && php artisan db:seed --class=UsersTableSeeder');
+		shell_exec('mv _flag-icon-list.scss node_modules/flag-icon-css/sass/');
 		$this->info('phantom installed!');
 
 	}
