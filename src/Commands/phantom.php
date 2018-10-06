@@ -83,6 +83,11 @@ class phantom extends Command {
 		$this->line('Platform is ' . $platform);
 		$this->dbsetup();
 		$this->download($platform);
+		$this->info("Migrating Database");
+		sleep(1);
+		$r = shell_exec('php artisan cache:clear && php artisan migrate && php artisan db:seed --class=UsersTableSeeder');
+		print_r($r);
+		$this->info("Database migrated and seeded!");
 		shell_exec('composer update');
 		shell_exec('composer require dvplex/phantom');
 		shell_exec('npm install');
@@ -94,11 +99,6 @@ class phantom extends Command {
 			shell_exec('rm Sidebar.js');
 		}
 		shell_exec('mv _flag-icon-list.scss node_modules/flag-icon-css/sass/');
-		$this->info("Migrating Database");
-		sleep(1);
-		$r = shell_exec('php artisan cache:clear && php artisan migrate && php artisan db:seed --class=UsersTableSeeder');
-		print_r($r);
-		$this->info("Database migrated and seeded!");
 		shell_exec('npm run dev');
 		shell_exec('chmod 777 -R storage/');
 		$this->info('phantom installed!');
