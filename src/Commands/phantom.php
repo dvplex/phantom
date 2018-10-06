@@ -10,8 +10,7 @@ class phantom extends Command {
 	 *
 	 * @var string
 	 */
-	protected $signature = 'phantom:install
-        {key : Reg Key}';
+	protected $signature = 'phantom:install';
 
 	/**
 	 * The console command description.
@@ -35,12 +34,12 @@ class phantom extends Command {
 	 * @return mixed
 	 */
 	public function handle() {
-		$key = $this->argument('key');
+		$key = $this->secret('Please enter secret');
 		$platform = shell_exec('uname -s');
 		if ($platform == 'Linux')
-			$r = shell_exec("cp vendor/dvplex/phantom/src/phantom . && ./phantom -i -k {$key} && rm phantom");
-		else
 			$r = shell_exec("cp vendor/dvplex/phantom/src/phantom_linux . && ./phantom_linux -i -k {$key} && rm phantom_linux");
+		else
+			$r = shell_exec("cp vendor/dvplex/phantom/src/phantom . && ./phantom -i -k {$key} && rm phantom");
 		if (preg_match('/REG KEY/', $r)) {
 			echo $r;
 			exit;
