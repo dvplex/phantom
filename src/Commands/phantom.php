@@ -55,6 +55,9 @@ class phantom extends Command {
 		$this->info('Database username: ' . $db['user']);
 		$this->info('Database password: ' . $db['pass']);
 		if ($this->confirm('Is this info correct?')) {
+			config(['database.connections.mysql.database' => $db['name']]);
+			config(['database.connections.mysql.username' => $db['user']]);
+			config(['database.connections.mysql.password' => $db['pass']]);
 			shell_exec("sed -i -e 's/DB_DATABASE=.*$/DB_DATABASE={$db['name']}/g' .env");
 			shell_exec("sed -i -e 's/DB_USERNAME=.*$/DB_USERNAME={$db['user']}/g' .env");
 			shell_exec("sed -i -e 's/DB_PASSWORD=.*$/DB_PASSWORD={$db['pass']}/g' .env");
@@ -87,7 +90,7 @@ class phantom extends Command {
 		shell_exec('composer require dvplex/phantom');
 		$this->info("Migrating Database");
 		sleep(1);
-		$r = shell_exec('php artisan cache:clear && php artisan migrate && php artisan db:seed --class=UsersTableSeeder');
+		$r = shell_exec('php artisan migrate && php artisan db:seed --class=UsersTableSeeder');
 		print_r($r);
 		$this->info("Database migrated and seeded!");
 		shell_exec('npm install');
