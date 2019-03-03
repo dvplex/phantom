@@ -20,7 +20,6 @@ class PhantomController extends Controller {
 	}
 
 	public function setLocale($loc) {
-
 		return phantom_route($loc);
 
 	}

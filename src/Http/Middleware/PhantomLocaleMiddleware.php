@@ -19,7 +19,10 @@ class PhantomLocaleMiddleware {
 
 	public function __construct(Auth $auth) {
 	}
+
 	public function handle(Request $request, Closure $next) {
+		if ($request->segment(1) == 'socket.io')
+			return $next($request);
 		config(['phantom.modules.current' => preg_replace(['/phantom\.modules\./', '/\@\S+/'], '', $request->route()->getName())]);
 		if ($request->route('lang')) {
 			if (in_array($request->route('lang'), config('app.locales'))) {

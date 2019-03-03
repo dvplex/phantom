@@ -70,7 +70,8 @@ class phantom extends Command {
 		}
 		shell_exec('mv _flag-icon-list.scss node_modules/flag-icon-css/sass/');
 		shell_exec('npm run dev');
-		shell_exec('chmod 777 -R storage/');
+		if ($platform == 'Linux')
+			shell_exec('chmod 777 -R storage/');
 		shell_exec('rm phantom.setup.ready');
 		$this->info('phantom installed!');
 

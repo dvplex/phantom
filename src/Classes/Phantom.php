@@ -33,23 +33,21 @@ class Phantom {
 		echo 'Phantom is Barking!';
 	}
 
-	public function get_fa_icons($select = false) {
+	public static function get_fa_icons($select = false) {
 		if (session('phantom.fa_icons'))
 			return session('phantom.fa_icons');
-		$content = file_get_contents('https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/advanced-options/metadata/icons.json');
-		$json = json_decode($content);
+		$content = @file_get_contents('https://gist.githubusercontent.com/anthonykozak/5bc706dc5128c337bc73f587e187102d/raw/86ae5eea6a09c98fbb5da61ad867c0d0224b0951/FontAwesome%25205%2520Free%2520JSON%2520Cheatsheet');
+		$json = @json_decode($content);
 		$icons = [];
 
 		$n = 0;
 		foreach ($json as $icon => $value) {
-			foreach ($value->styles as $style) {
-				if (!$select)
-					$icons[] = 'fa' . substr($style, 0, 1) . ' fa-' . $icon;
-				else {
-					$icons[$n]['title'] = $icon;
-					$icons[$n]['icon'] = 'fa' . substr($style, 0, 1) . ' fa-' . $icon;
-					$n++;
-				}
+			if (!$select)
+				$icons[] = $icon;
+			else {
+				$icons[$n]['title'] = $value;
+				$icons[$n]['icon'] = $icon;
+				$n++;
 			}
 		}
 		session(['phantom.fa_icons' => $icons]);
@@ -277,21 +275,13 @@ class Phantom {
 		switch ($type) {
 			case "reorder":
 				$content = '';
-				$menus = \Modules\Menus\Entities\Menu::with('nodes', 'roles', 'permissions');
+				$menus = \Modules\Menus\Entities\Menu::with('roles', 'permissions');
 				if ($name)
 					$menus->where('name', $name);
-				if (!empty($roles) || !empty($pms)) {
-					$menus->whereHas('roles', function ($q) use ($roles) {
-						$q->whereIn('name', $roles);
-					})
-						->orWhereHas('permissions', function ($q) use ($pms) {
-							$q->whereIn('name', $pms);
-						});
-				}
 				$menus = $menus->first();
 				if ($menus == null)
 					return;
-				$nodes = $menus->nodes()->orderBy('menu_pos', 'asc')->get();
+				$nodes = $menus->nodes()->with('roles', 'permissions')->orderBy('menu_pos', 'asc')->get();
 				$menu = Menu::new();
 				$menu->addClass('dd-list');
 				$menu->addItemClass('dd-item');
@@ -319,15 +309,23 @@ class Phantom {
 				$menus = $menus->first();
 				if ($menus == null)
 					return;
-				$nodes = $menus->nodes()->orderBy('menu_pos', 'asc')->get();
+				$nodes = $menus->nodes()->with('roles', 'permissions')->orderBy('menu_pos', 'asc')->get();
 				$menu = Menu::new();
 				$menu->addClass('site-menu');
 				$menu->addItemClass('site-menu-item');
 				$menu->setAttribute('data-plugin', 'menu');
 				$menu->html('<li class="site-menu-category">' . Lang::get('menu.menu') . '</li>');
-				foreach ($nodes as $node)
-					if ($node->parent_id == null)
+				foreach ($nodes as $node) {
+					$nroles = $node->getRoleNames()->toArray();
+					$npms = $node->permissions()->pluck('name')->toArray();
+					if ($node->parent_id == null) {
+						if (!empty($nroles) && !empty(array_diff($nroles, $roles)))
+							continue;
+						if (empty($nroles)&&!empty($npms) && !empty(array_diff($npms, $pms)))
+							continue;
 						$content .= self::renderNode($node);
+					}
+				}
 				$menu->html($content)->addItemParentClass('site-menu-item has-sub');
 
 				return $menu;
