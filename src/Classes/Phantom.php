@@ -321,7 +321,7 @@ class Phantom {
 					if ($node->parent_id == null) {
 						if (!empty($nroles) && !empty(array_diff($nroles, $roles)))
 							continue;
-						if (empty($nroles)&&!empty($npms) && !empty(array_diff($npms, $pms)))
+						if (empty($nroles) && !empty($npms) && !empty(array_diff($npms, $pms)))
 							continue;
 						$content .= self::renderNode($node);
 					}
@@ -341,7 +341,7 @@ class Phantom {
 		}
 	}
 
-	protected static function stubReplace($module, $name, $namePath = false) {
+	protected static function stubReplace($module, $name, $namePath = false, $module_path = false) {
 		$path = $module->getPath();
 		$lowerName = $module->getLowerName();
 		$studlyName = $module->getStudlyName();
@@ -367,19 +367,22 @@ class Phantom {
 			return true;
 		}
 		$r = file_get_contents(__DIR__ . "/../Stubs/{$name}.stub");
-		$r = str_replace(['$MODULE_NAMESPACE$', '$STUDLY_NAME$', '$LOWER_NAME$'], [$nameSpace, $studlyName, $lowerName], $r);
+		if ($name == 'routes.php' && $module_path)
+			$r = str_replace(['$MODULE_NAMESPACE$', '$STUDLY_NAME$', '$LOWER_NAME$', '$MODULE_PATH$'], [$nameSpace, $studlyName, $lowerName, $module_path], $r);
+		else
+			$r = str_replace(['$MODULE_NAMESPACE$', '$STUDLY_NAME$', '$LOWER_NAME$'], [$nameSpace, $studlyName, $lowerName], $r);
 		file_put_contents($path . "/{$namePath}/{$name}", $r);
 
 
 	}
 
-	protected static function generateFiles($module_name) {
+	protected static function generateFiles($module_name, $module_path = false) {
 		$module = Module::find(camel_case($module_name));
 		self::stubReplace($module, 'webpack.mix.js');
 		self::stubReplace($module, 'head.blade.php', 'Resources/views/layouts');
 		self::stubReplace($module, 'scripts.blade.php', 'Resources/views/layouts');
 		self::stubReplace($module, 'index.blade.php', 'Resources/views');
-		self::stubReplace($module, 'routes.php', 'Http');
+		self::stubReplace($module, 'routes.php', 'Http', $module_path);
 		$path = $module->getPath();
 		if (!is_dir($path . '/Resources/assets/css'))
 			mkdir($path . '/Resources/assets/css');
@@ -393,13 +396,21 @@ class Phantom {
 	}
 
 	public function module_add($request) {
+		$module_path = false;
+		if (isset($request->module_path))
+			$module_path = $request->module_path;
+		if ($module_path&&!preg_match('/\/$/',$module_path))
+			$module_path=$module_path.'/';
+		if ($module_path&&preg_match('/^\//',$module_path))
+			$module_path=preg_replace('/^\//','',$module_path);
 		$module_name = studly_case($request->module_name);
 		$modules = new Modules();
 		$modules->module_name = $module_name;
 		$modules->module_description = $request->get('module_description');
 		$modules->save();
+
 		Artisan::call('module:make', ['name' => [$module_name]]);
-		self::generateFiles($module_name);
+		self::generateFiles($module_name, $module_path);
 	}
 
 	public function module_edit($request) {
