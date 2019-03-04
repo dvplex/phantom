@@ -1,6 +1,6 @@
 <?php
 
-Route::group(['middleware' => ['web'],  'namespace' => '$MODULE_NAMESPACE$\$STUDLY_NAME$\Http\Controllers'], function () {
+Route::group(['middleware' => ['web','auth'],  'namespace' => '$MODULE_NAMESPACE$\$STUDLY_NAME$\Http\Controllers'], function () {
 	Route::get('/{lang?}/$MODULE_PATH$$LOWER_NAME$', '$STUDLY_NAME$Controller@index')->name('phantom.modules.$LOWER_NAME$@index');
 	Route::get('/{lang?}/$MODULE_PATH$$LOWER_NAME$/search/', '$STUDLY_NAME$Controller@search')->name('phantom.modules.$LOWER_NAME$@search');
 	Route::get('/{lang?}/$MODULE_PATH$$LOWER_NAME$/{id}/', '$STUDLY_NAME$Controller@show')->name('phantom.modules.$LOWER_NAME$@show');

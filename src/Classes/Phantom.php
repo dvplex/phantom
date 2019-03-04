@@ -26,6 +26,7 @@ use Modules\Routes\Entities\Route as Routes;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Middlewares\PermissionMiddleware;
 use Spatie\Permission\Middlewares\RoleMiddleware;
+use Spatie\Permission\Middlewares\RoleOrPermissionMiddleware;
 
 class Phantom {
 
@@ -132,6 +133,7 @@ class Phantom {
 		$router->aliasMiddleware('phantom_auth_basic_once', PhantomAuthBasicOnceMiddleware::class);
 		$router->aliasMiddleware('role', RoleMiddleware::class);
 		$router->aliasMiddleware('permission', PermissionMiddleware::class);
+		$router->aliasMiddleware('role_or_permission', RoleOrPermissionMiddleware::class);
 		if (!class_exists('Modules\Routes\Entities\Route') || !Schema::hasTable('routes'))
 			return;
 		if (!config('phantom.regroutes')) {
@@ -270,8 +272,10 @@ class Phantom {
 	}
 
 	public function menu($type = false, $name = false) {
-		$roles = \Auth::user()->roles->pluck('name')->toArray();
-		$pms = \Auth::user()->permissions->pluck('name')->toArray();
+		if (\AUth::check()) {
+			$roles = \Auth::user()->roles->pluck('name')->toArray();
+			$pms = \Auth::user()->permissions->pluck('name')->toArray();
+		}
 		switch ($type) {
 			case "reorder":
 				$content = '';
@@ -399,10 +403,10 @@ class Phantom {
 		$module_path = false;
 		if (isset($request->module_path))
 			$module_path = $request->module_path;
-		if ($module_path&&!preg_match('/\/$/',$module_path))
-			$module_path=$module_path.'/';
-		if ($module_path&&preg_match('/^\//',$module_path))
-			$module_path=preg_replace('/^\//','',$module_path);
+		if ($module_path && !preg_match('/\/$/', $module_path))
+			$module_path = $module_path . '/';
+		if ($module_path && preg_match('/^\//', $module_path))
+			$module_path = preg_replace('/^\//', '', $module_path);
 		$module_name = studly_case($request->module_name);
 		$modules = new Modules();
 		$modules->module_name = $module_name;
