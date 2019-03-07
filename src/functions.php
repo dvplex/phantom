@@ -47,6 +47,8 @@ make_helper('phantom_module_path', ['module']);
 make_helper('phantom_get_routes');
 
 make_helper('phantom_route', ['loc']);
+make_helper('phantom_prefs', ['user' => 'false']);
+make_helper('phantom_event_fire', ['event', 'args' => 'false']);
 
 if (!function_exists('phantom')) {
 	function phantom() {

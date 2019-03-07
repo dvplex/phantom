@@ -12,6 +12,7 @@ use Illuminate\Support\Collection;
 use dvplex\Phantom\Http\Middleware\PhantomMiddleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
+use Modules\Admin\Entities\Preference;
 use Modules\MenuNodes\Entities\MenuNode;
 use Nwidart\Modules\Facades\Module;
 use Illuminate\Foundation\AliasLoader;
@@ -30,8 +31,10 @@ use Spatie\Permission\Middlewares\RoleOrPermissionMiddleware;
 
 class Phantom {
 
-	public function bark() {
+	public static function bark() {
 		echo 'Phantom is Barking!';
+
+		return;
 	}
 
 	public static function get_fa_icons($select = false) {
@@ -100,9 +103,10 @@ class Phantom {
 		});
 	}
 
-	public function test($a, $b) {
-		dd($a . ' ' . $b);
+	public function phantom_event_fire($event, $args = false) {
+		Event::dispatch('phantom.' . $event, $args);
 	}
+
 
 	public function registerAliases() {
 		$loader = AliasLoader::getInstance();
@@ -211,6 +215,18 @@ class Phantom {
 		return redirect($str);
 	}
 
+	public static function phantom_prefs($user = false) {
+		if (!$user)
+			$user = \Auth::id();
+		else
+			$user = $user->id;
+		$pref = Preference::where('user_id', $user)->pluck('value', 'prop')->toArray();
+		foreach ($pref as $k => $v)
+			session()->put('phantom.preferences.' . $k, $v);
+
+		return;
+	}
+
 	protected static function renderNode($node, $type = false) {
 		$ct = '';
 		switch ($type) {
@@ -272,7 +288,7 @@ class Phantom {
 	}
 
 	public function menu($type = false, $name = false) {
-		if (\AUth::check()) {
+		if (\Auth::check()) {
 			$roles = \Auth::user()->roles->pluck('name')->toArray();
 			$pms = \Auth::user()->permissions->pluck('name')->toArray();
 		}
@@ -327,6 +343,48 @@ class Phantom {
 							continue;
 						if (empty($nroles) && !empty($npms) && !empty(array_diff($npms, $pms)))
 							continue;
+						$content .= self::renderNode($node);
+					}
+				}
+				$menu->html($content)->addItemParentClass('site-menu-item has-sub');
+
+				return $menu;
+				break;
+			case "top":
+				$content = '';
+				$menus = \Modules\Menus\Entities\Menu::with('nodes', 'roles', 'permissions');
+				if ($name)
+					$menus->where('name', $name);
+				if (!empty($roles) || !empty($pms)) {
+					$menus->whereHas('roles', function ($q) use ($roles) {
+						$q->whereIn('name', $roles);
+					})
+						->orWhereHas('permissions', function ($q) use ($pms) {
+							$q->whereIn('name', $pms);
+						});
+				}
+				$menus = $menus->first();
+				if ($menus == null)
+					return;
+				$nodes = $menus->nodes()->with('roles', 'permissions')->orderBy('menu_pos', 'asc')->get();
+				$menu = Menu::new();
+				$menu->addClass('site-menu mega-addon');
+				$menu->addItemClass('site-menu-item');
+				$menu->setAttribute('data-plugin', 'menu');
+				foreach ($nodes as $key => $node) {
+					$nroles = $node->getRoleNames()->toArray();
+					$npms = $node->permissions()->pluck('name')->toArray();
+					if ($node->parent_id == null) {
+						if (!empty($nroles) && !empty(array_diff($nroles, $roles)))
+							continue;
+						if (empty($nroles) && !empty($npms) && !empty(array_diff($npms, $pms)))
+							continue;
+
+						if ($key > 1 && $key % 6 == 0) {
+							$content .= '</ul></li>';
+							$content .= '<li class="mega-menu m-0">';
+							$content .= '<ul class="site-menu mega-addon" data-plugin="menu">';
+						}
 						$content .= self::renderNode($node);
 					}
 				}
