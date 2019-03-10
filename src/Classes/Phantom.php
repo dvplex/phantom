@@ -446,15 +446,15 @@ class Phantom {
 		self::stubReplace($module, 'index.blade.php', 'Resources/views');
 		self::stubReplace($module, 'routes.php', 'Http', $module_path);
 		$path = $module->getPath();
-		if (!is_dir($path . '/Resources/assets/css'))
-			mkdir($path . '/Resources/assets/css');
-		if (!is_dir($path . '/Resources/assets/js'))
-			mkdir($path . '/Resources/assets/js');
-		if (!is_dir($path . '/Resources/assets/sass'))
-			mkdir($path . '/Resources/assets/sass');
-		file_put_contents($path . '/Resources/assets/css/style.css', '');
-		file_put_contents($path . '/Resources/assets/sass/app.scss', '');
-		file_put_contents($path . '/Resources/assets/js/index.js', '');
+		if (!is_dir($path . '/Resources/css'))
+			mkdir($path . '/Resources/css');
+		if (!is_dir($path . '/Resources/js'))
+			mkdir($path . '/Resources/js');
+		if (!is_dir($path . '/Resources/sass'))
+			mkdir($path . '/Resources/sass');
+		file_put_contents($path . '/Resources/css/style.css', '');
+		file_put_contents($path . '/Resources/sass/app.scss', '');
+		file_put_contents($path . '/Resources/js/index.js', '');
 	}
 
 	public function module_add($request) {
