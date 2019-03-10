@@ -4,7 +4,7 @@ Route::group(['middleware' => ['web','auth'],  'namespace' => '$MODULE_NAMESPACE
 	Route::get('/{lang?}/$MODULE_PATH$$LOWER_NAME$', '$STUDLY_NAME$Controller@index')->name('phantom.modules.$LOWER_NAME$@index');
 	Route::get('/{lang?}/$MODULE_PATH$$LOWER_NAME$/search/', '$STUDLY_NAME$Controller@search')->name('phantom.modules.$LOWER_NAME$@search');
 	Route::get('/{lang?}/$MODULE_PATH$$LOWER_NAME$/{id}/', '$STUDLY_NAME$Controller@show')->name('phantom.modules.$LOWER_NAME$@show');
-	Route::get('/{lang?}/$MODULE_PATH$$LOWER_NAME$/add/{id}/', '$STUDLY_NAME$Controller@create')->name('phantom.modules.$LOWER_NAME$@create');
+	Route::get('/{lang?}/$MODULE_PATH$$LOWER_NAME$/add/', '$STUDLY_NAME$Controller@create')->name('phantom.modules.$LOWER_NAME$@create');
 	Route::get('/{lang?}/$MODULE_PATH$$LOWER_NAME$/modify/{id}/', '$STUDLY_NAME$Controller@edit')->name('phantom.modules.$LOWER_NAME$@edit');
 	Route::post('/{lang?}/$LOWER_NAME$/add/', '$STUDLY_NAME$Controller@store')->name('phantom.modules.$LOWER_NAME$@store');
 	Route::post('/{lang?}/$LOWER_NAME$/edit/', '$STUDLY_NAME$Controller@update')->name('phantom.modules.$LOWER_NAME$@update');
