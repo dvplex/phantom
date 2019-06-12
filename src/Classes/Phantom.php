@@ -291,6 +291,11 @@ class Phantom {
 		if (\Auth::check()) {
 			$roles = \Auth::user()->roles->pluck('name')->toArray();
 			$pms = \Auth::user()->permissions->pluck('name')->toArray();
+			$nrs = \Auth::user()->roles()->with('permissions')->get();
+			foreach ($nrs as $nr)
+				$nrpms = $nr->permissions->pluck('name')->toArray();
+			$pms = \Auth::user()->permissions->pluck('name')->toArray();
+			$pms = array_merge($nrpms,$pms);
 		}
 		switch ($type) {
 			case "reorder":

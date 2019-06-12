@@ -56,6 +56,7 @@ class phantom extends Command {
 		shell_exec('composer update');
 		shell_exec('composer require dvplex/phantom');
 		shell_exec("perl -p -i -e 's/fire\(/dispatch\(/g' vendor/nwidart/laravel-modules/src/Module.php");
+		shell_exec("perl -p -i -e 's/fire\(/dispatch\(/g' vendor/baum/baum/src/Baum/Move.php");
 		$this->info("Migrating Database");
 		sleep(1);
 		$r = shell_exec('php artisan migrate && php artisan db:seed --class=UsersTableSeeder');
