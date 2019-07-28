@@ -59,14 +59,10 @@ class Phantom {
 		return $icons;
 	}
 
-	public function phantom_view($id, $view, $data) {
+	public function phantom_view($view, $data) {
 		$v = [];
 		$view = \View::make($view, $data);
-		$view = $view->render();
-		$v['id'] = $id;
-		$v['view'] = $view;
-
-		return $v;
+		return $view->render();
 	}
 
 	public function phantom_search($id, $action) {
@@ -295,7 +291,8 @@ class Phantom {
 			foreach ($nrs as $nr)
 				$nrpms = $nr->permissions->pluck('name')->toArray();
 			$pms = \Auth::user()->permissions->pluck('name')->toArray();
-			$pms = array_merge($nrpms,$pms);
+			if ($pms && $nrpms)
+				$pms = array_merge($nrpms, $pms);
 		}
 		switch ($type) {
 			case "reorder":

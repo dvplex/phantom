@@ -2,11 +2,8 @@
 
 namespace dvplex\Phantom;
 
-use App\Http\Kernel;
 use dvplex\Phantom\Facades\Phantom;
 use dvplex\Phantom\Classes\PhantomValidator;
-use Illuminate\Foundation\AliasLoader;
-use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 
 class PhantomServiceProvider extends ServiceProvider {
@@ -15,14 +12,13 @@ class PhantomServiceProvider extends ServiceProvider {
 	 *
 	 * @return void
 	 */
-	public function boot(Router $router, Kernel $kernel) {
+	public function boot() {
 
 		Phantom::registerAliases();
 
 		Phantom::registerRoutes();
 
 		Phantom::registerConfig();
-
 
 		Phantom::eventsListen();
 
@@ -42,6 +38,7 @@ class PhantomServiceProvider extends ServiceProvider {
 	 * @return void
 	 */
 	public function register() {
+		// local only helper test
 		$this->app->singleton('phantom', function () {
 			return $this->app->make('dvplex\Phantom\Classes\Phantom');
 		});
