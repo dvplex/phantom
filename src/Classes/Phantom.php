@@ -293,6 +293,8 @@ class Phantom {
 			$pms = \Auth::user()->permissions->pluck('name')->toArray();
 			if ($pms && $nrpms)
 				$pms = array_merge($nrpms, $pms);
+            elseif (empty($pms))
+                $pms = $nrpms;
 		}
 		switch ($type) {
 			case "reorder":
