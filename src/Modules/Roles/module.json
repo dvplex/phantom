@@ -1,0 +1,13 @@
+{
+    "name": "Roles",
+    "alias": "roles",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "dvplex\\Phantom\\Modules\\Roles\\Providers\\RolesServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

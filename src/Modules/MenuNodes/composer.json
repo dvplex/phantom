@@ -1,0 +1,25 @@
+{
+    "name": "nwidart/menunodes",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\MenuNodes\\Providers\\MenuNodesServiceProvider"
+            ],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\MenuNodes\\": ""
+        }
+    }
+}

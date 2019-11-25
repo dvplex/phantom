@@ -1,0 +1,14 @@
+<?php
+namespace $NAMESPACE$;
+
+
+class $CLASS_NAME$ {
+    public function __construct() {
+    }
+    public static function render() {
+           $r = (string) <<<EOD
+           $CLASS_CONTENT$
+EOD;
+           return render_blade($r);
+    }
+}

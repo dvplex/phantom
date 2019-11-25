@@ -10,13 +10,41 @@ namespace dvplex\Phantom\Classes;
 
 
 class PhantomForm {
-	protected $form = [];
+    public function __construct() {
 
-	public function __construct() {
-	}
+    }
 
+    public static function generate($data, $module,$name,$action) {
+        if (preg_match('/Without Module/',$module)) {
+            $path = 'app/Forms/';
+            $namespace = 'App\\Forms';
+        }
+        else {
 
-	protected function addField() {
+            $path = $module.'/Forms/';
+            $namespace = str_replace('/','\\',$module).'\\Forms';
+        }
 
-	}
+        $fld = explode(',', $data);
+        $nlines ='';
+        foreach ($fld as $k => $fl) {
+            $dt = explode(':', $fl);
+            $r = file_get_contents(__DIR__ . '/../Stubs/Form/' . $dt[1] . '.stub');
+            if ($k==0)
+                $af = 'Autofocus';
+            else
+                $af ='';
+            $r = str_replace(['$FIELD_TYPE$', '$FIELD_NAME$', '$FIELD_LABEL$', '$AUTOFOCUS$'], [$dt[1], $dt[0], $dt[2],$af], $r);
+            $nlines != '' && $nlines .= "\n";
+            $nlines .= $r;
+        }
+        $r = file_get_contents(__DIR__ . '/../Stubs/Form/skeleton.stub');
+        $r = str_replace(['$FORM_ACTION$', '$FORM_BODY$'], [$action,$nlines], $r);
+        if (!is_dir(base_path($path)))
+            mkdir (base_path($path));
+        $c = file_get_contents(__DIR__ . '/../Stubs/Form/class_skeleton.stub');
+        $c = str_replace(['$CLASS_NAME$', '$CLASS_CONTENT$','$NAMESPACE$'], [$name,$r,$namespace], $c);
+        file_put_contents(base_path($path).$name.'.php',$c);
+        return "Successfully created ".base_path($path).$name.'.php';
+    }
 }

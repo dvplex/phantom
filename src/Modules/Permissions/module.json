@@ -1,0 +1,13 @@
+{
+    "name": "Permissions",
+    "alias": "permissions",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "dvplex\\Phantom\\Modules\\Permissions\\Providers\\PermissionsServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

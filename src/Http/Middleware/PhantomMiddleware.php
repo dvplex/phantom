@@ -20,8 +20,6 @@ class PhantomMiddleware {
 	}
 
 	public function handle(Request $request, Closure $next) {
-		config(['phantom.modules.current' => preg_replace(['/phantom\.modules\./','/\@\S+/'], '', $request->route()->getName())]);
-
 		return $next($request);
 	}
 }

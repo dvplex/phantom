@@ -1,7 +1,7 @@
 let mix = require('laravel-mix');
-mix.styles([__dirname+'/Resources/css/*.css'],
+mix.styles([__dirname+'/Resources/assets/css/*.css'],
 	'public/css/$MODULE_NAMESPACE$/$STUDLY_NAME$/after.css'
 )
-	.combine([__dirname+'/Resources/js/*.js'],
+	.combine([__dirname+'/Resources/assets/js/*.js'],
 	'public/js/$MODULE_NAMESPACE$/$STUDLY_NAME$/after.js'
 )

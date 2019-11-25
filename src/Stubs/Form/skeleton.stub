@@ -1,0 +1,12 @@
+<form method="post" :action="formPath('/{{ app()->getLocale() }}/$FORM_ACTION$')" @submit.prevent="onSubmit" @keydown="form.errors.clear(\$event.target.name)">
+	@csrf
+	<div class="panel">
+		<div class="panel-body container-fluid">
+		    $FORM_BODY$
+			<button type="submit" class="btn btn-add btn-animate btn-animate-side btn-outline-primary" :disabled="form.errors.any()">
+				<span v-if="valData"><i class="icon wb-edit" aria-hidden="true"></i>{{ __('modules::messages.edit') }}</span>
+				<span v-else><i class="icon wb-plus" aria-hidden="true"></i>{{ __('modules::messages.add') }}</span>
+			</button>
+		</div>
+	</div>
+</form>

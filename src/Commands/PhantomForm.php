@@ -12,7 +12,7 @@ class PhantomForm extends Command {
 	 *
 	 * @var string
 	 */
-	protected $signature = 'phantom:form {name : The name of the form class} {--F|fields=name:text,description:textarea : A comma separated list of fields in format NAME:TYPE} {--m|module : weather to add the form to a module or in the app itself. If choosen a table with available modules will be displayed.}';
+	protected $signature = 'phantom:form {name : The name of the form class} {--A|action=default : Form Action} {--F|fields=name:text:Name,description:textarea:Description : A comma separated list of fields in format NAME:TYPE:LABEL} {--m|module : weather to add the form to a module or in the app itself. If choosen a table with available modules will be displayed.}';
 
 	/**
 	 * The console command description.
@@ -55,18 +55,12 @@ class PhantomForm extends Command {
 			$module = 'Modules/'.$this->choice('Please choose a module ( empty to add form to application itself): ', $md , 0);
 		}
 
-		$fields = [];
-
 		$fld = $this->option('fields');
 
 
 		if ($fld) {
-			$fld = explode(',',$fld);
-			dd($fld);
-			foreach ($fld as $fl)  {
-
-
-			}
+		    $form = \dvplex\Phantom\Classes\PhantomForm::generate($fld,$module,$this->argument('name'),$this->option('action'));
+		    return $this->info($form);
 		}
 
 

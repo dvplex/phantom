@@ -1,0 +1,13 @@
+{
+    "name": "MenuNodes",
+    "alias": "menunodes",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "dvplex\\Phantom\\Modules\\MenuNodes\\Providers\\MenuNodesServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

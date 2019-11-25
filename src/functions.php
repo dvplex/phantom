@@ -32,6 +32,8 @@ function make_helper($function, $args = false) {
 
 make_helper('bark');
 
+make_helper('get_ip');
+
 make_helper('get_fa_icons', ['select' => 'false']);
 
 make_helper('phantom_slovom', ['int', 'currency' => 'false']);
@@ -47,6 +49,7 @@ make_helper('phantom_module_path', ['module']);
 make_helper('phantom_get_routes');
 
 make_helper('phantom_route', ['loc']);
+make_helper('render_blade', ['blade']);
 make_helper('phantom_prefs', ['user' => 'false']);
 make_helper('phantom_event_fire', ['event', 'args' => 'false']);
 

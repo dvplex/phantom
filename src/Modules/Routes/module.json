@@ -1,0 +1,13 @@
+{
+    "name": "Routes",
+    "alias": "routes",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "dvplex\\Phantom\\Modules\\Routes\\Providers\\RoutesServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

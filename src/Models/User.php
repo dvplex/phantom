@@ -2,7 +2,7 @@
 
 namespace dvplex\Phantom\Models;
 
-use App\Traits\PhantomSearch;
+use dvplex\Phantom\Traits\PhantomSearch;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;

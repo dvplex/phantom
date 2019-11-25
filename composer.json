@@ -17,14 +17,15 @@
         }
     ],
     "require": {
-		"nwidart/laravel-modules": "^3.0",
-		"spatie/laravel-menu": "^3.0",
-		"spatie/laravel-permission": "^3.0",
+        "baum/baum": "v2.x-dev",
+        "nwidart/laravel-modules": ">=6.2",
+		"spatie/laravel-menu": ">=3.0",
+		"spatie/laravel-permission": ">=3.0",
         "illuminate/support": "^6.0",
         "php" : "~7.3|~7.2|~7.1"
     },
     "require-dev": {
-        "phpunit/phpunit" : ">=5.4.3",
+        "phpunit/phpunit" : ">=7.0",
         "squizlabs/php_codesniffer": "^2.3"
     },
     "autoload": {
@@ -39,6 +40,9 @@
         }
     },
     "scripts": {
+        "post-install-cmd": [
+            "dvplex\\Phantom\\Phantom::postInstall"
+        ],
         "test": "phpunit",
         "check-style": "phpcs -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests",
         "fix-style": "phpcbf -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests"

@@ -1,0 +1,13 @@
+{
+    "name": "Modules",
+    "alias": "modules",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "dvplex\\Phantom\\Modules\\Modules\\Providers\\ModulesServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}
