@@ -43,7 +43,7 @@ class PhantomServiceProvider extends ServiceProvider {
 		});
 
 		$this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
-        $this->loadMigrationsFrom(__DIR__ . '/MIgrations/');
+        $this->loadMigrationsFrom(__DIR__ . '/Migrations/');
 
 		if ($this->app->runningInConsole()) {
 			$this->commands([
