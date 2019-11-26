@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Users\Database\Seeders;
+namespace dvplex\Phantom\Modules\Users\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +16,12 @@ class UsersDatabaseSeeder extends Seeder
     {
         Model::unguard();
 
+        DB::table('users')->insert([
+            'name' => 'admin',
+            'email' => 'admin@example.com',
+            'username' => 'admin',
+            'password' => bcrypt('password'),
+        ]);
         // $this->call("OthersTableSeeder");
     }
 }

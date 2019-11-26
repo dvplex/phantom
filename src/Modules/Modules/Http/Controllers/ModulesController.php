@@ -31,8 +31,7 @@ class ModulesController extends Controller {
 	}
 
 	public function index(Request $request) {
-		$test = (string) TestForm::render();
-		return view('modules::index',compact('test'));
+		return view('modules::index');
 	}
 
 	/**
