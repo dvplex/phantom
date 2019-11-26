@@ -2,42 +2,45 @@
 
 namespace dvplex\Phantom\Commands;
 
+use dvplex\Phantom\Models\Role;
+use dvplex\Phantom\Models\User;
+use dvplex\Phantom\Modules\Menus\Entities\Menu;
 use Illuminate\Console\Command;
 
 class phantom extends Command {
-	/**
-	 * The name and signature of the console command.
-	 *
-	 * @var string
-	 */
-	protected $signature = 'phantom:install';
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'phantom:install';
 
-	/**
-	 * The console command description.
-	 *
-	 * @var string
-	 */
-	protected $description = 'Initialize phantom files';
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Initialize phantom files';
 
-	/**
-	 * Create a new command instance.
-	 *
-	 * @return void
-	 */
-	public function __construct() {
-		parent::__construct();
-	}
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct() {
+        parent::__construct();
+    }
 
-	/**
-	 * Execute the console command.
-	 *
-	 * @return mixed
-	 */
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
 
 
-	public function handle() {
-		if (!is_file('phantom.setup.ready'))
-			dd('Please run first "php artisan phantom:setup"');
+    public function handle() {
+        if (!is_file('phantom.setup.ready'))
+            dd('Please run first "php artisan phantom:setup"');
 
         $this->info('Unpacking files...');
         $zip = new \ZipArchive();
@@ -60,9 +63,15 @@ class phantom extends Command {
         }
         $this->info("Migrating Database");
         $this->call('migrate');
-        $this->call('db:seed', ['--class' => 'dvplex\\Phantom\\Seeds\\UsersTableSeeder']);
-        $this->call('db:seed', ['--class' => 'dvplex\\Phantom\\Seeds\\RolesTableSeeder']);
-        $this->call('db:seed', ['--class' => 'dvplex\\Phantom\\Seeds\\MenusTableSeeder']);
+        $u = User::first();
+        if ($u->count() <= 0)
+            $this->call('db:seed', ['--class' => 'dvplex\\Phantom\\Seeds\\UsersTableSeeder']);
+        $rol = Role::first();
+        if ($rol->count() <= 0)
+            $this->call('db:seed', ['--class' => 'dvplex\\Phantom\\Seeds\\RolesTableSeeder']);
+        $men = Menu::first();
+        if ($men->count() <= 0)
+            $this->call('db:seed', ['--class' => 'dvplex\\Phantom\\Seeds\\MenusTableSeeder']);
         $this->info("Database migrated and seeded!");
         $this->info("Installing npm modules...");
         if (substr(php_uname(), 0, 7) == "Windows") {
@@ -74,7 +83,7 @@ class phantom extends Command {
             shell_exec("npm install");
             shell_exec("npm run dev");
         }
-		unlink('phantom.setup.ready');
+        unlink('phantom.setup.ready');
 
-	}
+    }
 }

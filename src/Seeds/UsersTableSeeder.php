@@ -1,6 +1,5 @@
 <?php
 namespace dvplex\Phantom\Seeds;
-use dvplex\Phantom\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 class UsersTableSeeder extends Seeder
@@ -12,11 +11,11 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-    	User::firstOrCreate([
-		    'name' => 'admin',
-		    'email' => 'admin@example.com',
-		    'username' => 'admin',
-		    'password' => bcrypt('password'),
-	    ]);
+         DB::table('users')->insert([
+            'name' => 'admin',
+            'email' => 'admin@example.com',
+            'username' => 'admin',
+            'password' => bcrypt('password'),
+        ]);
     }
 }

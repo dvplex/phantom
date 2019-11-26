@@ -1,8 +1,8 @@
 <?php
 namespace dvplex\Phantom\Seeds;
-use dvplex\Phantom\Modules\MenuNodes\Entities\MenuNode;
-use dvplex\Phantom\Modules\Menus\Entities\Menu;
+use dvplex\Phantom\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 class MenusTableSeeder extends Seeder
 {
     /**
@@ -12,11 +12,11 @@ class MenusTableSeeder extends Seeder
      */
     public function run()
     {
-    	Menu::firstOrCreate([
-		    'name' => 'main_menu',
-	    ]);
+        DB::table('menu')->insert([
+            'name' => 'main_menu',
+        ]);
 
-        MenuNode::firstOrCreate([
+        DB::table('menu_nodes')->insert([
             'name' => 'Dashboard',
             'left' => 1,
             'right' => 2,
