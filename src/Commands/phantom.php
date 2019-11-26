@@ -64,13 +64,13 @@ class phantom extends Command {
         $this->info("Migrating Database");
         $this->call('migrate');
         $u = User::first();
-        if ($u->count() <= 0)
+        if (!$u)
             $this->call('db:seed', ['--class' => 'dvplex\\Phantom\\Seeds\\UsersTableSeeder']);
         $rol = Role::first();
-        if ($rol->count() <= 0)
+        if (!$rol)
             $this->call('db:seed', ['--class' => 'dvplex\\Phantom\\Seeds\\RolesTableSeeder']);
         $men = Menu::first();
-        if ($men->count() <= 0)
+        if (!$men)
             $this->call('db:seed', ['--class' => 'dvplex\\Phantom\\Seeds\\MenusTableSeeder']);
         $this->info("Database migrated and seeded!");
         $this->info("Installing npm modules...");

@@ -12,8 +12,9 @@ class MenusTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('menu')->insert([
+        DB::table('menus')->insert([
             'name' => 'main_menu',
+            'Description' => 'This is the main menu',
         ]);
 
         DB::table('menu_nodes')->insert([
