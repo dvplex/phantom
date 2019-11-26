@@ -1,0 +1,78 @@
+<?php
+
+namespace dvplex\Phantom\Commands;
+
+use Illuminate\Console\Command;
+
+class phantom extends Command {
+	/**
+	 * The name and signature of the console command.
+	 *
+	 * @var string
+	 */
+	protected $signature = 'phantom:install';
+
+	/**
+	 * The console command description.
+	 *
+	 * @var string
+	 */
+	protected $description = 'Initialize phantom files';
+
+	/**
+	 * Create a new command instance.
+	 *
+	 * @return void
+	 */
+	public function __construct() {
+		parent::__construct();
+	}
+
+	/**
+	 * Execute the console command.
+	 *
+	 * @return mixed
+	 */
+
+
+	public function handle() {
+		if (!is_file('phantom.setup.ready'))
+			dd('Please run first "php artisan phantom:setup"');
+
+        $this->info('Unpacking files...');
+        $zip = new \ZipArchive();
+        $res = $zip->open(__DIR__ . '/../phantom.zip');
+        if ($res === TRUE) {
+            $zip->extractTo(base_path());
+            $zip->close();
+            $this->info('Phantom extracted');
+        }
+        else {
+            $this->error('Problem with package archive!');
+            exit;
+        }
+
+        if (substr(php_uname(), 0, 7) == "Windows") {
+            pclose(popen("start /B composer dump-autoload", "r"));
+        }
+        else {
+            shell_exec("composer dump-autoload");
+        }
+        $this->info("Migrating Database");
+        $this->call('migrate');
+        $this->call('db:seed', ['--class' => 'UsersTableSeeder']);
+        $this->info("Database migrated and seeded!");
+        $this->info("Installing npm modules...");
+        if (substr(php_uname(), 0, 7) == "Windows") {
+            pclose(popen("start /B npm install", "r"));
+            pclose(popen("start /B npm run dev", "r"));
+        }
+        else {
+            shell_exec('chmod 777 -R storage/');
+            shell_exec("npm install");
+            shell_exec("npm run dev");
+        }
+		unlink('phantom.setup.ready');
+
+	}
+}

@@ -38,6 +38,10 @@ class PhantomServiceProvider extends ServiceProvider {
 	 * @return void
 	 */
 	public function register() {
+		// local only helper test
+		if (file_exists($file = __DIR__ . '/functions.php')) {
+			require $file;
+		}
 		$this->app->singleton('phantom', function () {
 			return $this->app->make('dvplex\Phantom\Classes\Phantom');
 		});
@@ -46,6 +50,7 @@ class PhantomServiceProvider extends ServiceProvider {
 
 		if ($this->app->runningInConsole()) {
 			$this->commands([
+				Commands\phantom::class,
 				Commands\PhantomForm::class,
 				Commands\PhantomImapGet::class,
 				Commands\phantomInitialSetup::class,

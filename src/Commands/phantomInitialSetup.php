@@ -79,41 +79,8 @@ class phantomInitialSetup extends Command {
         file_put_contents(base_path('composer.json'),$jsonString);
         $this->project_name();
         $this->dbsetup();
-        $this->info('Unpacking files...');
-        $zip = new \ZipArchive();
-        $res = $zip->open(__DIR__ . '/../phantom.zip');
-        if ($res === TRUE) {
-            $zip->extractTo(base_path());
-            $zip->close();
-            $this->info('Phantom extracted');
-        }
-        else {
-            $this->error('Problem with package archive!');
-            exit;
-        }
+        file_put_contents('phantom.setup.ready',1);
+        $this->info('Phantom is now ready to install! Please run php artisan phantom:install');
 
-        if (substr(php_uname(), 0, 7) == "Windows") {
-            pclose(popen("start /B composer dump-autoload", "r"));
-        }
-        else {
-            shell_exec("composer dump-autoload");
-        }
-        sleep(1);
-        $this->info("Migrating Database");
-        $this->call('migrate');
-        $this->call('db:seed', ['--class' => 'UsersTableSeeder']);
-        $this->info("Database migrated and seeded!");
-        $this->info("Installing npm modules...");
-        if (substr(php_uname(), 0, 7) == "Windows") {
-            pclose(popen("start /B npm install", "r"));
-            pclose(popen("start /B npm run dev", "r"));
-        }
-        else {
-            shell_exec('chmod 777 -R storage/');
-            shell_exec("npm install");
-            shell_exec("npm run dev");
-        }
-
-        $this->info('Phantom installed!');
     }
 }
