@@ -1,11 +1,8 @@
 <?php
-
-namespace Modules\Users\Database\Seeders;
-
+namespace dvplex\Phantom\Seeds;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Eloquent\Model;
 
-class UsersDatabaseSeeder extends Seeder
+class UsersTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,14 +11,11 @@ class UsersDatabaseSeeder extends Seeder
      */
     public function run()
     {
-        Model::unguard();
-
-        DB::table('users')->insert([
+         DB::table('users')->insert([
             'name' => 'admin',
             'email' => 'admin@example.com',
             'username' => 'admin',
             'password' => bcrypt('password'),
         ]);
-        // $this->call("OthersTableSeeder");
     }
 }

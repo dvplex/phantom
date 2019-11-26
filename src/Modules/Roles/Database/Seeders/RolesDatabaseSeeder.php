@@ -1,6 +1,6 @@
 <?php
 
-namespace dvplex\Phantom\Modules\Roles\Database\Seeders;
+namespace Modules\Roles\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
