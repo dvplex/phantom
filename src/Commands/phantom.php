@@ -13,7 +13,7 @@ class phantom extends Command {
      *
      * @var string
      */
-    protected $signature = 'phantom:install';
+    protected $signature = 'phantom:install {--U|update : Update only}';
 
     /**
      * The console command description.
@@ -39,9 +39,8 @@ class phantom extends Command {
 
 
     public function handle() {
-        if (!is_file('phantom.setup.ready'))
-            dd('Please run first "php artisan phantom:setup"');
-
+        if (!$this->option('update') && !is_file('phantom.setup.ready'))
+            dd('Please run first php artisan phantom:setup');
         $this->info('Unpacking files...');
         $zip = new \ZipArchive();
         $res = $zip->open(__DIR__ . '/../phantom.zip');

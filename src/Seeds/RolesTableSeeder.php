@@ -22,5 +22,11 @@ class RolesTableSeeder extends Seeder
 		    'model_id' => 1,
 		    'model_type' => 'dvplex\\Phantom\\Models\\User',
 	    ]);
+
+        DB::table('model_has_roles')->insert([
+            'role_id' => 1,
+            'model_id' => 1,
+            'model_type' => 'dvplex\\Phantom\\Modules\\Menus\\Entities\\Menu',
+        ]);
     }
 }

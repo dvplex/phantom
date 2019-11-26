@@ -7,53 +7,52 @@ use dvplex\Phantom\Classes\PhantomValidator;
 use Illuminate\Support\ServiceProvider;
 
 class PhantomServiceProvider extends ServiceProvider {
-	/**
-	 * Perform post-registration booting of services.
-	 *
-	 * @return void
-	 */
-	public function boot() {
+    /**
+     * Perform post-registration booting of services.
+     *
+     * @return void
+     */
+    public function boot() {
 
-		Phantom::registerAliases();
+        Phantom::registerAliases();
 
-		Phantom::registerRoutes();
+        Phantom::registerRoutes();
 
-		Phantom::registerConfig();
+        Phantom::registerConfig();
 
-		Phantom::eventsListen();
+        Phantom::eventsListen();
 
-		$this->loadViewsFrom(__DIR__ . '/resources/views', 'phantom');
+        $this->loadViewsFrom(__DIR__ . '/resources/views', 'phantom');
 
-		$this->publishes([
-			__DIR__ . '/resources/views' => base_path('resources/views/dvplex/phantom'),
-		]);
+        $this->publishes([
+            __DIR__ . '/resources/views' => base_path('resources/views/dvplex/phantom'),
+        ]);
 
-		PhantomValidator::boot();
+        PhantomValidator::boot();
 
-	}
+    }
 
-	/**
-	 * Register any package services.
-	 *
-	 * @return void
-	 */
-	public function register() {
+    /**
+     * Register any package services.
+     *
+     * @return void
+     */
+    public function register() {
+        $this->app->singleton('phantom', function () {
+            return $this->app->make('dvplex\Phantom\Classes\Phantom');
+        });
 
-		$this->app->singleton('phantom', function () {
-			return $this->app->make('dvplex\Phantom\Classes\Phantom');
-		});
-
-		$this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
+        $this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
         $this->loadMigrationsFrom(__DIR__ . '/Migrations/');
 
-		if ($this->app->runningInConsole()) {
-			$this->commands([
-				Commands\phantom::class,
-				Commands\PhantomForm::class,
-				Commands\PhantomImapGet::class,
-				Commands\phantomInitialSetup::class,
-			]);
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                Commands\phantom::class,
+                Commands\PhantomForm::class,
+                Commands\PhantomImapGet::class,
+                Commands\phantomInitialSetup::class,
+            ]);
 
-		}
-	}
+        }
+    }
 }
