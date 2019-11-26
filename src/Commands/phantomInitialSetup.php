@@ -88,13 +88,22 @@ class phantomInitialSetup extends Command {
             $this->info('Phantom extracted');
         }
         else {
-            echo 'Doh!';
+            $this->error('Problem with package archive!');
             exit;
         }
+
+        if (substr(php_uname(), 0, 7) == "Windows") {
+            pclose(popen("start /B composer dump-autoload", "r"));
+        }
+        else {
+            shell_exec("composer dump-autoload");
+        }
+        sleep(1);
         $this->info("Migrating Database");
         $this->call('migrate');
         $this->call('db:seed', ['--class' => 'UsersTableSeeder']);
         $this->info("Database migrated and seeded!");
+        $this->info("Installing npm modules...");
         if (substr(php_uname(), 0, 7) == "Windows") {
             pclose(popen("start /B npm install", "r"));
             pclose(popen("start /B npm run dev", "r"));
@@ -104,5 +113,7 @@ class phantomInitialSetup extends Command {
             shell_exec("npm install");
             shell_exec("npm run dev");
         }
+
+        $this->info('Phantom installed!');
     }
 }
