@@ -62,6 +62,7 @@ class phantom extends Command {
         $this->call('migrate');
         $this->call('db:seed', ['--class' => 'dvplex\\Phantom\\Seeds\\UsersTableSeeder']);
         $this->call('db:seed', ['--class' => 'dvplex\\Phantom\\Seeds\\RolesTableSeeder']);
+        $this->call('db:seed', ['--class' => 'dvplex\\Phantom\\Seeds\\MenusTableSeeder']);
         $this->info("Database migrated and seeded!");
         $this->info("Installing npm modules...");
         if (substr(php_uname(), 0, 7) == "Windows") {

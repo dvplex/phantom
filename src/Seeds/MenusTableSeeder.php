@@ -3,7 +3,7 @@ namespace dvplex\Phantom\Seeds;
 use dvplex\Phantom\Modules\MenuNodes\Entities\MenuNode;
 use dvplex\Phantom\Modules\Menus\Entities\Menu;
 use Illuminate\Database\Seeder;
-class UsersTableSeeder extends Seeder
+class MenusTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
