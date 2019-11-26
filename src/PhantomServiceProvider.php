@@ -46,8 +46,6 @@ class PhantomServiceProvider extends ServiceProvider {
 
 		if ($this->app->runningInConsole()) {
 			$this->commands([
-				Commands\phantom::class,
-				Commands\phantomUpdate::class,
 				Commands\PhantomForm::class,
 				Commands\PhantomImapGet::class,
 				Commands\phantomInitialSetup::class,
