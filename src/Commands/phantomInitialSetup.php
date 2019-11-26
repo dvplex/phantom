@@ -74,7 +74,7 @@ class phantomInitialSetup extends Command {
     public function handle() {
         $jsonString = file_get_contents(base_path('composer.json'));
         $data = json_decode($jsonString, true);
-        $data['autoload']['psr-4']['Modules2\\'] = 'Modules2/';
+        $data['autoload']['psr-4']['Modules\\'] = 'Modules/';
         $jsonString = json_encode($data,JSON_UNESCAPED_SLASHES);
         file_put_contents(base_path('composer.json'),$jsonString);
         $this->project_name();
