@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('phantom::layouts.app')
 
 @section('content')
 <div class="container">
