@@ -21,4 +21,5 @@ return [
     'Disable top menu' => 'Disable top menu',
     'Disable side menu' => 'Disable side menu',
     'Collapse side bar' => 'Collapse side bar',
+    'Side menu per module' => 'Per module side menu',
 ];

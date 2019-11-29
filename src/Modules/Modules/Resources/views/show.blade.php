@@ -1,7 +1,7 @@
-@extends('layouts.master')
+@extends('phantom::layouts.master')
 
 @section('content')
-    @component('layouts.settings-menu')
+    @component('phantom::layouts.settings-menu')
         <div class="row">
             <div class="col-sm-6">
                 <button class="btn btn-add btn-animate btn-animate-side btn-outline-primary" data-target="#addRoute" data-backdrop="static" data-keyboard="false" data-toggle="modal" type="button">

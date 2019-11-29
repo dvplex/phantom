@@ -1,7 +1,7 @@
-@extends('layouts.master')
+@extends('phantom::layouts.master')
 
 @section('content')
-    @component('layouts.settings-menu')
+    @component('phantom::layouts.settings-menu')
         <div class="card card-primary card-outline card-tabs" data-plugin="tabs">
             <div class="card-header p-0 pt-1 border-bottom-0">
                 <ul class="nav nav-tabs nav-tabs-line mr-25" role="tablist">

@@ -145,7 +145,7 @@ class Phantom {
         config(['permission.models.role' => \dvplex\Phantom\Models\Role::class]);
         config(['permission.models.permission' => \dvplex\Phantom\Models\Permission::class]);
         config(['phantom.modules.main' => 'admin']);
-        Paginator::defaultView('layouts.paginate');
+        Paginator::defaultView('phantom::layouts.paginate');
 
         return;
     }

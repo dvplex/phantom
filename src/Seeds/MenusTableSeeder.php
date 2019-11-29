@@ -12,14 +12,31 @@ class MenusTableSeeder extends Seeder
     public function run()
     {
         DB::table('menus')->insert([
-            'name' => 'main_menu',
-            'Description' => 'This is the main menu',
+            'name' => 'side_menu',
+            'type' => 1,
+            'Description' => 'This is a side menu',
         ]);
 
         DB::table('menu_nodes')->insert([
             'name' => 'Dashboard',
             'left' => 1,
             'menu_id' => 1,
+            'right' => 2,
+            'route' => 'phantom.modules.admin@index',
+            'menu_icon' => 'fas fa-home',
+            'menu_pos' => 0,
+        ]);
+
+        DB::table('menus')->insert([
+            'name' => 'top_menu',
+            'type' => 0,
+            'Description' => 'This is a top menu',
+        ]);
+
+        DB::table('menu_nodes')->insert([
+            'name' => 'Dashboard',
+            'left' => 1,
+            'menu_id' => 2,
             'right' => 2,
             'route' => 'phantom.modules.admin@index',
             'menu_icon' => 'fas fa-home',

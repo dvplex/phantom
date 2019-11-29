@@ -22,10 +22,10 @@ class PhantomServiceProvider extends ServiceProvider {
 
         Phantom::eventsListen();
 
-        $this->loadViewsFrom(__DIR__ . '/resources/views', 'phantom');
+        $this->loadViewsFrom(__DIR__ . '/Views', 'phantom');
 
         $this->publishes([
-            __DIR__ . '/resources/views' => base_path('resources/views/dvplex/phantom'),
+            __DIR__ . '/Views/' => resource_path('views/vendor/phantom'),
         ]);
 
         PhantomValidator::boot();

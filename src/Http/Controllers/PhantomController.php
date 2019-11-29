@@ -15,7 +15,6 @@ class PhantomController extends Controller {
 		$current_time = ($timezone)
 			? Carbon::now(str_replace('-', '/', $timezone))
 			: Carbon::now();
-
 		return view('phantom::time', compact('current_time'));
 	}
 

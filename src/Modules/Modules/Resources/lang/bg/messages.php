@@ -21,4 +21,5 @@ return [
     'Disable top menu' => 'Забрани топ меню',
     'Disable side menu' => 'Забрани страничното меню',
     'Collapse side bar' => 'Сгъни страничната част',
+    'Side menu per module' => 'Странично меню за всеки модул',
 ];
