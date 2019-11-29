@@ -13,7 +13,7 @@ use Illuminate\Routing\Router;
 use dvplex\Phantom\Modules\Modules\Entities\Module;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Modules\Admin\Entities\Preference;
+use dvplex\Phantom\Modules\Modules\Entities\Preference;
 
 class ModulesController extends Controller {
 	/**
@@ -142,11 +142,22 @@ class ModulesController extends Controller {
     }
 
     public function s_general() {
-        return view('modules::s-general');
+        $user = Auth::id();
+        $prefs = Preference::where('user_id',$user)->get();
+        $gsettings=[];
+        foreach ($prefs as $pref) {
+            if ($pref->value=='on')
+                $gsettings[$pref->prop] = 'checked="checked"';
+            elseif ($pref->value=='off')
+                $gsettings[$pref->prop] = '';
+
+        }
+        return view('modules::s-general',compact('gsettings'));
     }
 
     public function save_prefs(Request $request) {
         $user = Auth::id();
+        $keys = '';
         DB::beginTransaction();
         foreach ($request->all() as $key => $val) {
             $pref = Preference::where('user_id', $user)->where('prop',$key)->first();
@@ -157,10 +168,26 @@ class ModulesController extends Controller {
             $pref->value = $val;
             $pref->user_id= $user;
             $pref->save();
+            $keys != '' && $keys.=',';
+            $keys.="'".$key."'";
         }
+        if ($keys) {
+            $prefs = Preference::whereRaw("prop not in ({$keys})")->get();
+            foreach ($prefs as $pref) {
+                $pref->value='off';
+                $pref->save();
+            }
+        }
+        else {
+            $prefs = Preference::all();
+            foreach ($prefs as $pref) {
+                $pref->value='off';
+                $pref->save();
+            }
+        }
+
         DB::commit();
         phantom_prefs();
-
         return;
     }
 }

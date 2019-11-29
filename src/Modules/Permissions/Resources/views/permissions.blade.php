@@ -1,10 +1,10 @@
 <div class="row">
-	<div class="col-sm-6">
+	<div class="col-6">
 		<button class="btn btn-add btn-animate btn-animate-side btn-outline-primary" data-target="#addMenu1" data-backdrop="static" data-keyboard="false" data-toggle="modal" type="button">
 			<span><i class="icon wb-plus" aria-hidden="true"></i>{{ __('permissions::messages.add permission') }}</span>
 		</button>
 	</div>
-	<div class="col-sm-6">
+	<div class="col-6">
 
 		{!! phantom_search('permissionSearch', phantom_link('permissions@search')) !!}
 

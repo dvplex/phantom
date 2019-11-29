@@ -82,7 +82,8 @@ class phantom extends Command {
             shell_exec("npm install");
             shell_exec("npm run dev");
         }
-        unlink('phantom.setup.ready');
+        if (!$this->option('update'))
+            unlink('phantom.setup.ready');
 
     }
 }

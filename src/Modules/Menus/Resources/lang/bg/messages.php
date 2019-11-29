@@ -9,4 +9,7 @@ return [
 	'Menu icon' => 'Икона на линка',
 	'Menu nodes' => 'Линкове',
 	'Menu order' => 'Подреждане на меню',
+    'Type' => 'Тип',
+    'Horizontal' => 'Хоризонтално',
+    'Vertical' => 'Вертикално',
 ];

@@ -1,9 +1,10 @@
 <?php
 
 return [
-	'general'   => 'общи',
-	'modules'   => 'модули',
-	'menus'     => 'менюта',
-	'users'     => 'потребители',
-	'roles and permissions'     => 'роли и права',
+	'general'   => 'Общи',
+	'modules'   => 'Модули',
+	'menus'     => 'Менюта',
+	'users'     => 'Потребители',
+    'Settings'     => 'Настройки',
+	'roles and permissions'     => 'Роли и Права',
 ];

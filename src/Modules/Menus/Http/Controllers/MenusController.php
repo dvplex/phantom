@@ -19,6 +19,11 @@ class MenusController extends Controller {
 	 */
 
 	public function search(Request $request) {
+        $types = $type = [];
+        $types[0]['label'] = trans('menus::messages.Horizontal');
+        $types[0]['value'] = 0;
+        $types[1]['label'] = trans('menus::messages.Vertical');
+        $types[1]['value'] = 1;
 		$menus = Menu::with('roles', 'permissions')
 			->searchInit($request, 'menuSearch')
 			->searchFields(['description', 'name'])
@@ -31,7 +36,9 @@ class MenusController extends Controller {
 			$permission = $menu->permissions()->get()->map(function ($item) {
 				return ['value' => $item['id'], 'label' => $item['name']];
 			});
-			$menu->setAttribute('role', $role);
+			$type = $types[$menu->type];
+			$menu->setAttribute('type', $type);
+            $menu->setAttribute('role', $role);
 			$menu->setAttribute('permission', $permission);
 	}
 
@@ -39,6 +46,13 @@ class MenusController extends Controller {
 	}
 
 	public function index() {
+	    $types = [];
+	    $types[0]['label'] = trans('menus::messages.Horizontal');
+        $types[0]['value'] = 0;
+        $types[1]['label'] = trans('menus::messages.Vertical');
+        $types[1]['value'] = 1;
+
+        $types = json_encode($types);
 		$permissions = Permission::all();
 		$mid = [];
 		$n = 0;
@@ -60,7 +74,7 @@ class MenusController extends Controller {
 		}
 		$roles = json_encode($mid);
 
-		return view('menus::index', compact('roles', 'permissions'));
+		return view('menus::index', compact('roles', 'permissions','types'));
 	}
 
 	/**
@@ -83,6 +97,7 @@ class MenusController extends Controller {
 		]);
 		$menu = new Menu();
 		$menu->name = $request->name;
+        $menu->type = $request->type['value'];
 		$menu->description = $request->description;
 		$menu->save();
 
@@ -179,6 +194,7 @@ class MenusController extends Controller {
 
 		$menu = Menu::find($request->id);
 		$menu->name = $request->name;
+        $menu->type = $request->type['value'];
 		$menu->description = $request->description;
 
 		$menu->save();

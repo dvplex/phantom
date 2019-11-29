@@ -18,4 +18,7 @@ return [
 	'Path' => 'Route path prefix',
 	'Middlewares' => 'Middleware',
 	'Modules' => 'Modules',
+    'Disable top menu' => 'Disable top menu',
+    'Disable side menu' => 'Disable side menu',
+    'Collapse side bar' => 'Collapse side bar',
 ];

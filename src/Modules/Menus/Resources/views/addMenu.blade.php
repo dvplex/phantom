@@ -12,6 +12,11 @@
 				<textarea :class="{focus: valData}" class="form-control empty" rows="3" name="description" v-model="form.formData.description"></textarea>
 				<span class="text-danger" v-if="form.errors.has('description')" v-text="form.errors.get('description')"></span>
 			</div>
+            <div class="form-group">
+                <label>{{ __('menus::messages.Type') }}</label>
+                <v-select class="form-control" id="select" v-model="form.formData.type" :options="{{ $types }}"></v-select>
+                <span class="text-danger" v-if="form.errors.has('type')" v-text="form.errors.get('type')"></span>
+            </div>
 			<div class="form-group">
 				<label for="select">{{ __('roles::messages.Roles') }}</label>
 				<v-select multiple="multiple" class="form-control" id="select" v-model="form.formData.role" :options="{{ $roles }}"></v-select>

@@ -18,4 +18,7 @@ return [
 	'Middlewares' => 'Мидълуеър',
 	'Path' => 'Уеб път префикс',
 	'Modules' => 'Модули',
+    'Disable top menu' => 'Забрани топ меню',
+    'Disable side menu' => 'Забрани страничното меню',
+    'Collapse side bar' => 'Сгъни страничната част',
 ];

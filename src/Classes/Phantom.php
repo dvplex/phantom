@@ -28,17 +28,20 @@ class Phantom {
 
         return;
     }
+
     public static function postInstall() {
         $zip = new \ZipArchive();
-        $res = $zip->open(__DIR__.'../phantom.zip');
+        $res = $zip->open(__DIR__ . '../phantom.zip');
         if ($res === TRUE) {
             $zip->extractTo(base_path());
             $zip->close();
             echo 'Phantom exctracted!';
-        } else {
+        }
+        else {
             echo 'Doh!';
         }
     }
+
     public function get_ip() {
         $client = @$_SERVER['HTTP_CLIENT_IP'];
         $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
@@ -244,7 +247,7 @@ class Phantom {
         return;
     }
 
-    protected static function renderNode($node, $type = false) {
+    protected static function renderNode($node, $type = false, $depth = false) {
         $ct = '';
         switch ($type) {
             case 'reorder':
@@ -265,6 +268,42 @@ class Phantom {
                     $ct .= '<ul class="dd-list">';
                     foreach ($node->children as $child)
                         $ct .= self::renderNode($child, 'reorder');
+                    $ct .= "</ul>";
+                }
+
+                $ct .= "</li>";
+
+                return $ct;
+                break;
+            case 'top':
+                if ($node->children()->count() > 0) {
+                    if ($depth)
+                        $ct .= '<li class="dropdown-submenu"><a class="dropdown-item dropdown-toggle" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" href="javascript:void(0)">';
+                    else
+                        $ct .= '<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" href="javascript:void(0)">';
+                    $ct .= '<i class="nav-icon ' . $node->menu_icon . '" aria-hidden="true"></i>';
+                    $ct .= '<span class="ml-2">' . Lang::get('menu.' . $node->name) . '</span>
+
+						</a>';
+                }
+                else {
+                    if ($node->route != null) {
+                        if ($depth)
+                            $ct .= '<li><a class="dropdown-item" href="' . route($node->route, ['lang' => app()->getLocale()]) . '">';
+                        else
+                            $ct .= '<li class="nav-item"><a class="nav-link" href="' . route($node->route, ['lang' => app()->getLocale()]) . '">';
+                        $ct .= '<i class="nav-icon ' . $node->menu_icon . '" aria-hidden="true"></i>';
+                        $ct .= '<span class="ml-2">' . Lang::get('menu.' . $node->name) . '</span>
+                            </a>';
+                    }
+                }
+                $depth = 1;
+                if ($node->children()->count() > 0) {
+                    $ct .= '<ul class="dropdown-menu border-0 shadow">';
+                    foreach ($node->children as $child) {
+                        $ct .= self::renderNode($child, 'top', $depth);
+                        $depth++;
+                    }
                     $ct .= "</ul>";
                 }
 
@@ -340,9 +379,10 @@ class Phantom {
             default:
                 $content = '';
                 $menus = \dvplex\Phantom\Modules\Menus\Entities\Menu::with('nodes', 'roles', 'permissions');
+                $menus->where('type', 1);
                 if ($name)
                     $menus->where('name', $name);
-                if (!empty($roles) || !empty($pms)) {
+                if ((!empty($roles) || !empty($pms)) && ($menus->first()->roles->count() || $menus->first()->permissions->count())) {
                     $menus->whereHas('roles', function ($q) use ($roles) {
                         $q->whereIn('name', $roles);
                     })
@@ -381,10 +421,11 @@ class Phantom {
                 break;
             case "top":
                 $content = '';
-                $menus = \Modules\Menus\Entities\Menu::with('nodes', 'roles', 'permissions');
+                $menus = \dvplex\Phantom\Modules\Menus\Entities\Menu::with('nodes', 'roles', 'permissions');
+                $menus->where('type', 0);
                 if ($name)
                     $menus->where('name', $name);
-                if (!empty($roles) || !empty($pms)) {
+                if ((!empty($roles) || !empty($pms)) && ($menus->first()->roles->count() || $menus->first()->permissions->count())) {
                     $menus->whereHas('roles', function ($q) use ($roles) {
                         $q->whereIn('name', $roles);
                     })
@@ -397,9 +438,8 @@ class Phantom {
                     return;
                 $nodes = $menus->nodes()->with('roles', 'permissions')->orderBy('menu_pos', 'asc')->get();
                 $menu = Menu::new();
-                $menu->addClass('site-menu mega-addon');
-                $menu->addItemClass('site-menu-item');
-                $menu->setAttribute('data-plugin', 'menu');
+                $menu->addClass('navbar-nav');
+                $menu->addItemClass('nav-item');
                 foreach ($nodes as $key => $node) {
                     $nroles = $node->getRoleNames()->toArray();
                     $npms = $node->permissions()->pluck('name')->toArray();
@@ -409,15 +449,10 @@ class Phantom {
                         if (empty($nroles) && !empty($npms) && !empty(array_diff($npms, $pms)))
                             continue;
 
-                        if ($key > 1 && $key % 6 == 0) {
-                            $content .= '</ul></li>';
-                            $content .= '<li class="mega-menu m-0">';
-                            $content .= '<ul class="site-menu mega-addon" data-plugin="menu">';
-                        }
-                        $content .= self::renderNode($node);
+                        $content .= self::renderNode($node, 'top');
                     }
                 }
-                $menu->html($content)->addItemParentClass('nav-item has-treeview');
+                $menu->html($content);
 
                 return $menu;
                 break;

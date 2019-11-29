@@ -9,5 +9,8 @@ return [
 	'Menu icon' => 'Node icon',
 	'Menu nodes' => 'Menu nodes',
 	'Menu order' => 'Menu reorder',
+    'Type' => 'Type',
+    'Horizontal' => 'Horizontal',
+    'Vertical' => 'Vertical',
 
 ];

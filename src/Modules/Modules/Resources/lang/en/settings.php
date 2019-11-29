@@ -1,9 +1,10 @@
 <?php
 
 return [
-	'general'   => 'general',
-	'modules'   => 'modules',
-	'menus'     => 'menus',
-	'users'  => 'users',
-	'roles and permissions'     => 'roles and permissions',
+	'general'   => 'General',
+	'modules'   => 'Modules',
+	'menus'     => 'Menus',
+	'users'  => 'Users',
+    'Settings'  => 'Settings',
+	'roles and permissions'     => 'Roles and Permissions',
 ];
