@@ -12,4 +12,5 @@ return [
     'Type' => 'Тип',
     'Horizontal' => 'Хоризонтално',
     'Vertical' => 'Вертикално',
+    'Module' => 'Модул',
 ];

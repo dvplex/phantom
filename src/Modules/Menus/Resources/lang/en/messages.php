@@ -12,5 +12,6 @@ return [
     'Type' => 'Type',
     'Horizontal' => 'Horizontal',
     'Vertical' => 'Vertical',
+    'Module' => 'Module',
 
 ];

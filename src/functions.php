@@ -48,6 +48,8 @@ make_helper('phantom_module_path', ['module']);
 
 make_helper('phantom_get_routes');
 
+make_helper('list_modules');
+
 make_helper('phantom_route', ['loc']);
 make_helper('render_blade', ['blade']);
 make_helper('phantom_prefs', ['user' => 'false']);

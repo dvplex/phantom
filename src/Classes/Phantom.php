@@ -380,9 +380,16 @@ class Phantom {
                 $content = '';
                 $menus = \dvplex\Phantom\Modules\Menus\Entities\Menu::with('nodes', 'roles', 'permissions');
                 $menus->where('type', 1);
+                if (session('phantom.preferences.modules_sidemenu')=='on') {
+                    $menus_tmp = clone $menus;
+                    $menus_tmp->where('module',config('phantom.modules.current'));
+                    if ($menus_tmp->first())
+                        $menus->where('module',config('phantom.modules.current'));
+                }
+
                 if ($name)
                     $menus->where('name', $name);
-                if ((!empty($roles) || !empty($pms)) && ($menus->first()->roles->count() || $menus->first()->permissions->count())) {
+                if ((!empty($roles) || !empty($pms)) && ($menus->first()&& ($menus->first()->roles->count() || $menus->first()->permissions->count()))) {
                     $menus->whereHas('roles', function ($q) use ($roles) {
                         $q->whereIn('name', $roles);
                     })
@@ -453,7 +460,6 @@ class Phantom {
                     }
                 }
                 $menu->html($content);
-
                 return $menu;
                 break;
             case "settings":
@@ -462,9 +468,10 @@ class Phantom {
     }
 
     public function list_modules() {
-        foreach (app('modules')->all() as $module) {
-            echo $module->getName() . ' ' . $module->enabled() . ' ' . $module->getPath() . '<br>';
-        }
+        $modules = collect(app('modules')->allEnabled())->map(function ($item){
+           return ['name'=>$item->getLowerName(),'path'=>$item->getPath()];
+        });
+        return $modules;
     }
 
     protected static function stubReplace($module, $name, $namePath = false, $module_path = false) {

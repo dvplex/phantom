@@ -11,6 +11,7 @@ use Illuminate\Routing\Router;
 use dvplex\Phantom\Modules\MenuNodes\Entities\MenuNode;
 use dvplex\Phantom\Modules\Menus\Entities\Menu;
 use dvplex\Phantom\Modules\Routes\Entities\Route;
+use function foo\func;
 
 class MenusController extends Controller {
 	/**
@@ -24,6 +25,7 @@ class MenusController extends Controller {
         $types[0]['value'] = 0;
         $types[1]['label'] = trans('menus::messages.Vertical');
         $types[1]['value'] = 1;
+        $modules=[];
 		$menus = Menu::with('roles', 'permissions')
 			->searchInit($request, 'menuSearch')
 			->searchFields(['description', 'name'])
@@ -37,7 +39,10 @@ class MenusController extends Controller {
 				return ['value' => $item['id'], 'label' => $item['name']];
 			});
 			$type = $types[$menu->type];
-			$menu->setAttribute('type', $type);
+            $modules['label']=trim($menu->module);
+            $modules['value']=trim($menu->module);
+			$menu->setAttribute('module', $modules);
+            $menu->setAttribute('type', $type);
             $menu->setAttribute('role', $role);
 			$menu->setAttribute('permission', $permission);
 	}
@@ -51,7 +56,10 @@ class MenusController extends Controller {
         $types[0]['value'] = 0;
         $types[1]['label'] = trans('menus::messages.Vertical');
         $types[1]['value'] = 1;
-
+        $modules = list_modules()->map(function ($item){
+            return ['label'=>$item['name'],'value'=>$item['name']];
+        });
+        $modules = json_encode($modules);
         $types = json_encode($types);
 		$permissions = Permission::all();
 		$mid = [];
@@ -74,7 +82,7 @@ class MenusController extends Controller {
 		}
 		$roles = json_encode($mid);
 
-		return view('menus::index', compact('roles', 'permissions','types'));
+		return view('menus::index', compact('roles', 'permissions','types','modules'));
 	}
 
 	/**
@@ -97,6 +105,8 @@ class MenusController extends Controller {
 		]);
 		$menu = new Menu();
 		$menu->name = $request->name;
+		if($request->module['value'])
+		    $menu->module=$request->module['value'];
         $menu->type = $request->type['value'];
 		$menu->description = $request->description;
 		$menu->save();
@@ -191,10 +201,11 @@ class MenusController extends Controller {
 			'name'        => 'required|unique:menus,name,' . $request->id . '|max:255|without_spaces',
 			'description' => 'required|min:2',
 		]);
-
 		$menu = Menu::find($request->id);
 		$menu->name = $request->name;
         $menu->type = $request->type['value'];
+        if($request->module['value'])
+            $menu->module=$request->module['value'];
 		$menu->description = $request->description;
 
 		$menu->save();
