@@ -3,7 +3,7 @@
 namespace dvplex\Phantom\Commands;
 
 use dvplex\Phantom\Models\Role;
-use App\User;
+use dvplex\Phantom\Models\User;
 use dvplex\Phantom\Modules\Menus\Entities\Menu;
 use Illuminate\Console\Command;
 
@@ -72,6 +72,12 @@ class phantom extends Command {
         if (!$men)
             $this->call('db:seed', ['--class' => 'dvplex\\Phantom\\Seeds\\MenusTableSeeder']);
         $this->info("Database migrated and seeded!");
+
+        $this->info('Publishishing files...');
+        $this->call('vendor:publish',[
+            '--provider' =>'dvplex\Phantom\PhantomServiceProvider'
+        ]);
+
         $this->info("Installing npm modules...");
         if (substr(php_uname(), 0, 7) == "Windows") {
             pclose(popen("start /B npm install", "r"));
@@ -85,5 +91,9 @@ class phantom extends Command {
         if (!$this->option('update'))
             unlink('phantom.setup.ready');
 
+        if (!$this->option('update'))
+            $this->info('Phantom successfully installed!');
+        else
+            $this->info('Phantom successfully upgraded!');
     }
 }

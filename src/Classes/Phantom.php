@@ -6,7 +6,7 @@ use dvplex\Phantom\Http\Middleware\PhantomLocaleMiddleware;
 use dvplex\Phantom\Http\Middleware\PhantomAuthBasicOnceMiddleware;
 use dvplex\Phantom\Models\Permission;
 use dvplex\Phantom\Models\Role;
-use App\User;
+use dvplex\Phantom\Models\User;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;

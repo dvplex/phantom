@@ -4,7 +4,7 @@ namespace dvplex\Phantom\Modules\Users\Http\Controllers;
 
 use dvplex\Phantom\Models\Permission;
 use dvplex\Phantom\Models\Role;
-use App\User;
+use dvplex\Phantom\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;

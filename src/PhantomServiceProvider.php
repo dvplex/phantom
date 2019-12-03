@@ -22,6 +22,10 @@ class PhantomServiceProvider extends ServiceProvider {
 
         Phantom::eventsListen();
 
+        $this->publishes([
+            __DIR__.'/config/phantom.php' => config_path('phantom.php'),
+        ]);
+
         $this->loadViewsFrom(__DIR__ . '/Views', 'phantom');
 
         $this->publishes([
