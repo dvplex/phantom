@@ -14,7 +14,7 @@ class AddModuleFieldMenusTable extends Migration
     public function up()
     {
         Schema::table('menus', function (Blueprint $table) {
-            $table->string('module');
+            $table->string('module')->default('');
         });
     }
 
@@ -26,7 +26,7 @@ class AddModuleFieldMenusTable extends Migration
     public function down()
     {
         Schema::table('menus', function (Blueprint $table) {
-            $table->dropColumn('module')->default('');
+            $table->dropColumn('module');
         });
     }
 }

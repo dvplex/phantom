@@ -4,6 +4,9 @@ namespace dvplex\Phantom\Classes;
 
 use dvplex\Phantom\Http\Middleware\PhantomLocaleMiddleware;
 use dvplex\Phantom\Http\Middleware\PhantomAuthBasicOnceMiddleware;
+use dvplex\Phantom\Models\Permission;
+use dvplex\Phantom\Models\Role;
+use App\User;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
@@ -141,9 +144,9 @@ class Phantom {
         config(['phantom.routes' => $r]);
         config(['app.locales' => ['en', 'bg']]);
         // override User model :-)
-        config(['auth.providers.users.model' => \dvplex\Phantom\Models\User::class]);
-        config(['permission.models.role' => \dvplex\Phantom\Models\Role::class]);
-        config(['permission.models.permission' => \dvplex\Phantom\Models\Permission::class]);
+        config(['auth.providers.users.model' => User::class]);
+        config(['permission.models.role' => Role::class]);
+        config(['permission.models.permission' => Permission::class]);
         config(['phantom.modules.main' => 'admin']);
         Paginator::defaultView('phantom::layouts.paginate');
 

@@ -3,7 +3,7 @@
 namespace dvplex\Phantom\Commands;
 
 use dvplex\Phantom\Models\Role;
-use dvplex\Phantom\Models\User;
+use App\User;
 use dvplex\Phantom\Modules\Menus\Entities\Menu;
 use Illuminate\Console\Command;
 

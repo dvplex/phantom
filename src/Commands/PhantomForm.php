@@ -2,7 +2,6 @@
 
 namespace dvplex\Phantom\Commands;
 
-use dvplex\Phantom\Models\User;
 use Illuminate\Console\Command;
 use Modules\Modules\Entities\Module;
 
