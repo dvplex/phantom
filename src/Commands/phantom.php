@@ -74,9 +74,11 @@ class phantom extends Command {
         $this->info("Database migrated and seeded!");
 
         $this->info('Publishishing files...');
-        $this->call('vendor:publish',[
-            '--provider' =>'dvplex\Phantom\PhantomServiceProvider'
-        ]);
+        if (!$this->option('update')) {
+            $this->call('vendor:publish',[
+                '--provider' =>'dvplex\Phantom\PhantomServiceProvider'
+            ]);
+        }
 
         $this->info("Installing npm modules...");
         if (substr(php_uname(), 0, 7) == "Windows") {

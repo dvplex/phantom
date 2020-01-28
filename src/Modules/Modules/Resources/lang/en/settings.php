@@ -7,4 +7,7 @@ return [
 	'users'  => 'Users',
     'Settings'  => 'Settings',
 	'roles and permissions'     => 'Roles and Permissions',
+    'CMS'  => 'CMS',
+    'Layouts'  => 'Layouts',
+    'Pages'  => 'Pages',
 ];

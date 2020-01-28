@@ -67,9 +67,9 @@ class UsersController extends Controller {
 	 */
 	public function store(Request $request) {
 		$validatedData = $request->validate([
-			'username' => 'required|unique:users|max:255|without_spaces',
-			'name'     => 'required|min:4',
-			'password' => 'min:6|confirmed',
+			'username' => 'unique:users|max:255|without_spaces',
+			'name'     => 'min:4',
+			'password' => 'required|min:6|confirmed',
 			'email'    => 'required|email',
 		]);
 		$users = new User();
@@ -125,13 +125,14 @@ class UsersController extends Controller {
 	 * @return Response
 	 */
 	public function update(Request $request) {
+	    $idField = config('phantom.user_primary_key');
 		$validatedData = $request->validate([
-			'username' => 'required|unique:users,username,' . $request->id . '|max:255|without_spaces',
-			'name'     => 'required|min:4',
+			'username' => 'unique:users,username,' . $request->$idField . '|max:191|without_spaces',
+			'name'     => 'min:4',
 			'password' => 'min:6|confirmed',
 			'email'    => 'required|email',
 		]);
-		$users = User::find($request->id);
+		$users = User::find($request->$idField);
 		$users->username = $request->get('username');
 		$users->name = $request->get('name');
 		$users->email = $request->get('email');

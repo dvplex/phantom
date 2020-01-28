@@ -54,6 +54,7 @@ make_helper('phantom_route', ['loc']);
 make_helper('render_blade', ['blade']);
 make_helper('phantom_prefs', ['user' => 'false']);
 make_helper('phantom_event_fire', ['event', 'args' => 'false']);
+make_helper('array2ini', ['a', 'parent' => '[]']);
 
 if (!function_exists('phantom')) {
 	function phantom() {

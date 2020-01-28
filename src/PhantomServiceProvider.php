@@ -25,8 +25,9 @@ class PhantomServiceProvider extends ServiceProvider {
         $this->publishes([
             __DIR__.'/config/phantom.php' => config_path('phantom.php'),
         ]);
-
+        $cms_theme="phantom";
         $this->loadViewsFrom(__DIR__ . '/Views', 'phantom');
+        $this->loadViewsFrom(app_path('/CMS/Themes/'.$cms_theme.'/views'), 'cms');
 
         $this->publishes([
             __DIR__ . '/Views/' => resource_path('views/vendor/phantom'),
@@ -42,11 +43,16 @@ class PhantomServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register() {
+        // local only helper test
+        if (file_exists($file = __DIR__ . '/functions.php')) {
+            require $file;
+        }
         $this->app->singleton('phantom', function () {
             return $this->app->make('dvplex\Phantom\Classes\Phantom');
         });
 
         $this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
+        $this->loadRoutesFrom(app_path('/CMS/Routes/web.php'));
         $this->loadMigrationsFrom(__DIR__ . '/Migrations/');
 
         if ($this->app->runningInConsole()) {

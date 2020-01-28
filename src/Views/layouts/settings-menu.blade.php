@@ -9,7 +9,7 @@
 						</div>
 					</div>
 					<hr>
-					<ul data-accordion="false" class="nav nav-pills nav-sidebar flex-column nav-flat">
+					<ul data-widget="treeview" data-accordion="false" class="nav nav-pills nav-sidebar flex-column nav-flat">
 						<li></li>
 						<li class="nav-item">
 							<a class="nav-link" href="/{{ app()->getLocale() }}/admin/settings/general/"><i class="nav-icon fas fa-cog text-blue" aria-hidden="true"></i>
@@ -36,6 +36,23 @@
 								<span>{{ __('modules::settings.roles and permissions') }}</span>
 							</a>
 						</li>
+                        <li class="nav-item has-treeview">
+                            <a class="nav-link" href="javascript:void(0)"><i class="nav-icon fas fa-sitemap text-cyan" aria-hidden="true"></i>
+                                <span>{{ __('modules::settings.CMS') }}</span>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/{{ app()->getLocale() }}/admin/cms/"><i class="nav-icon fas fa-clipboard-list text-dark" aria-hidden="true"></i>
+                                        <span>{{ __('modules::settings.Layouts') }}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/{{ app()->getLocale() }}/cms/pages/"><i class="nav-icon fas fa-scroll text-dark" aria-hidden="true"></i>
+                                        <span>{{ __('modules::settings.Pages') }}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 					</ul>
 				</nav>
 			</div>

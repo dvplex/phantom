@@ -7,4 +7,10 @@ return [
 
     'user_primary_key' => 'id',
 
+    /*
+     *  CMS default theme
+     */
+
+    'cms_theme' => env('CMS_THEME','phantom'),
+
 ];

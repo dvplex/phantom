@@ -1,0 +1,13 @@
+{
+    "name": "CMS",
+    "alias": "cms",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "dvplex\\Phantom\\Modules\\CMS\\Providers\\CMSServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

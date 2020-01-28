@@ -7,4 +7,7 @@ return [
 	'users'     => 'Потребители',
     'Settings'     => 'Настройки',
 	'roles and permissions'     => 'Роли и Права',
+    'CMS'  => 'CMS',
+    'Layouts'  => 'Оформления',
+    'Pages'  => 'Страници',
 ];

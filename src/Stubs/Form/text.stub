@@ -1,5 +1,5 @@
 <div class="form-group">
     <label>{{ __('modules::messages.$FIELD_LABEL$') }}</label>
-    <input :class="{focus: valData}" type="$FIELD_TYPE$" class="form-control" name="$FIELD_NAME$" v-model="form.formData.$FIELD_NAME$" $AUTOFOCUS$>
+    <input :class="{focus: valData}" type="$FIELD_TYPE$" class="form-control" name="$FIELD_NAME$" v-model="form.formData.$FIELD_NAME$" $OPTIONS$ $AUTOFOCUS$>
     <span class="text-danger" v-if="form.errors.has('$FIELD_NAME$')" v-text="form.errors.get('$FIELD_NAME$')"></span>
 </div>

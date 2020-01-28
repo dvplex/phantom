@@ -355,7 +355,8 @@ class Phantom {
             $pms = \Auth::user()->permissions->pluck('name')->toArray();
             if ($pms && $nrpms)
                 $pms = array_merge($nrpms, $pms);
-            elseif (empty($pms))
+            elseif (empty($pms)&&!empty($nrpms))
+                $pms = $nrpms;
                 $pms = $nrpms;
         }
         switch ($type) {
@@ -609,24 +610,24 @@ class Phantom {
 
 
             case '2':
-                if ($int{0} == '1') {
-                    $text = $teens[$int{1}];
+                if ($int[0] == '1') {
+                    $text = $teens[$int[1]];
 
                 }
-                else if ($int{1} == '0') {
-                    $text = $tens[$int{0}];
+                else if ($int[1] == '0') {
+                    $text = $tens[$int[0]];
                     if ($flag == 3) $text = 'и ' . $text;
                     $flag = 0;
                 }
                 else {
-                    $text = $tens[$int{0}] . ' и ' . $units[$int{1}];
+                    $text = $tens[$int[0]] . ' и ' . $units[$int[1]];
                 }
                 break;
 
 
             case '3':
                 if ($int % 100 == 0) {
-                    $text = $hundredth[$int{0}];
+                    $text = $hundredth[$int[0]];
                 }
                 else {
                     $int_tmp = substr($int, 1);
@@ -635,7 +636,7 @@ class Phantom {
                     else
                         $add = '';
                     $flag = 3;
-                    $text = $hundredth[$int{0}] . " $add " . self::Slovom(substr($int, 1));
+                    $text = $hundredth[$int[0]] . " $add " . self::Slovom(substr($int, 1));
 
                 }
                 break;
@@ -731,5 +732,29 @@ class Phantom {
         }
 
         return ob_get_clean();
+    }
+
+    public  function array2ini(array $a, array $parent = array())
+    {
+        $out = '';
+        foreach ($a as $k => $v)
+        {
+            if (is_array($v))
+            {
+                //subsection case
+                //merge all the sections into one array...
+                $sec = array_merge((array) $parent, (array) $k);
+                //add section information to the output
+                $out .= '[' . join('.', $sec) . ']' . PHP_EOL;
+                //recursively traverse deeper
+                $out .= arr2ini($v, $sec);
+            }
+            else
+            {
+                //plain key->value case
+                $out .= "$k=$v" . PHP_EOL;
+            }
+        }
+        return $out;
     }
 }

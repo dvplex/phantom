@@ -30,7 +30,7 @@ class MenusController extends Controller {
 			->searchInit($request, 'menuSearch')
 			->searchFields(['description', 'name'])
 			->orderByFields(['description', 'name'])
-			->search(5);
+			->search(1);
 		foreach ($menus as $menu) {
 			$role = $menu->roles()->get()->map(function ($item) {
 				return ['value' => $item['id'], 'label' => $item['name']];
@@ -46,7 +46,7 @@ class MenusController extends Controller {
             $menu->setAttribute('role', $role);
 			$menu->setAttribute('permission', $permission);
 	}
-
+        dd($menus);
 		return view('menus::menu-content', compact('menus'));
 	}
 
