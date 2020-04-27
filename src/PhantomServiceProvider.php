@@ -45,9 +45,6 @@ class PhantomServiceProvider extends ServiceProvider {
      */
     public function register() {
         // local only helper test
-        if (file_exists($file = __DIR__ . '/functions.php')) {
-            require $file;
-        }
         $this->app->singleton('Phantom', function () {
             return $this->app->make('dvplex\Phantom\Classes\Phantom');
         });
