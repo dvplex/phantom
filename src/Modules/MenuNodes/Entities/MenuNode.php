@@ -3,14 +3,16 @@
 namespace dvplex\Phantom\Modules\MenuNodes\Entities;
 
 use dvplex\Phantom\Traits\PhantomSearch;
-use Baum\Node;
+use dvplex\Phantom\Baum\Node;
 use dvplex\Phantom\Modules\Menus\Entities\Menu;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
  * Menu
  */
 class MenuNode extends Node {
+    use SoftDeletes;
 	use HasRoles;
 	use PhantomSearch;
 	/**

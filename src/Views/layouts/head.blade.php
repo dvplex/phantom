@@ -17,4 +17,5 @@
 	@include( config('phantom.modules.current') .'::layouts.head')
 
 
+
 </head>

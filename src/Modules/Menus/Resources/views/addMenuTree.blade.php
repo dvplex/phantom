@@ -1,4 +1,4 @@
-<form method="post" :action="formPath('/{{ app()->getLocale() }}/menuNodes')" @submit.prevent="passHidden($event,{'menuId':'{{ $menu->id }}'})" @keydown="form.errors.clear($event.target.name)">
+<form method="post" :action="formPath('/{{ app()->getLocale() }}/admin/menuNodes')" @submit.prevent="passHidden($event,{'menuId':'{{ $menu->id }}'})" @keydown="form.errors.clear($event.target.name)">
 	@csrf
 	<div class="card">
 		<div class="card-body">

@@ -4,10 +4,12 @@ namespace dvplex\Phantom\Modules\Routes\Entities;
 
 use dvplex\Phantom\Traits\PhantomSearch;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Traits\HasRoles;
 use dvplex\Phantom\Modules\Modules\Entities\Module;
 
 class Route extends Model {
+    use SoftDeletes;
 	use hasRoles;
 	use PhantomSearch;
 	protected $fillable = ['request', 'method', 'route'];

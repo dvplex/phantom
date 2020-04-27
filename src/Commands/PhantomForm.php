@@ -11,7 +11,7 @@ class PhantomForm extends Command {
 	 *
 	 * @var string
 	 */
-	protected $signature = 'phantom:form {name : The name of the form class} {--A|action=default : Form Action} {--F|fields=name:text:Name,description:textarea:Description|rows:3;cols:3 : A comma separated list of fields in format NAME:TYPE:LABEL|options} {--m|module : weather to add the form to a module or in the app itself. If choosen a table with available modules will be displayed.}';
+	protected $signature = 'phantom:form {name : The name of the form class} {--A|action=default : Form Action} {--F|fields=name:text:Name,description:textarea:Description|rows:3;cols:3 : A comma separated list of fields in format NAME:TYPE:LABEL|options} {--m|module : Whether to add the form to a module or in the app itself. If choosen a table with available modules will be displayed.}';
 
 	/**
 	 * The console command description.

@@ -6,8 +6,8 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::get('/{lang?}/$MODULE_PATH$$LOWER_NAME$/add/', '$STUDLY_NAME$Controller@create')->name('phantom.modules.$LOWER_NAME$@create');
 	Route::get('/{lang?}/$MODULE_PATH$$LOWER_NAME$/{id}/', '$STUDLY_NAME$Controller@show')->name('phantom.modules.$LOWER_NAME$@show');
 	Route::get('/{lang?}/$MODULE_PATH$$LOWER_NAME$/modify/{id}/', '$STUDLY_NAME$Controller@edit')->name('phantom.modules.$LOWER_NAME$@edit');
-	Route::post('/{lang?}/$LOWER_NAME$/add/', '$STUDLY_NAME$Controller@store')->name('phantom.modules.$LOWER_NAME$@store');
-	Route::post('/{lang?}/$LOWER_NAME$/edit/', '$STUDLY_NAME$Controller@update')->name('phantom.modules.$LOWER_NAME$@update');
+	Route::post('/{lang?}/$MODULE_PATH$$LOWER_NAME$/add/', '$STUDLY_NAME$Controller@store')->name('phantom.modules.$LOWER_NAME$@store');
+	Route::post('/{lang?}/$MODULE_PATH$$LOWER_NAME$/edit/', '$STUDLY_NAME$Controller@update')->name('phantom.modules.$LOWER_NAME$@update');
 	Route::post('/{lang?}/$MODULE_PATH$$LOWER_NAME$/delete/', '$STUDLY_NAME$Controller@destroy')->name('phantom.modules.$LOWER_NAME$@destroy');
 
 });

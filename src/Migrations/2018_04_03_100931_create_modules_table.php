@@ -19,6 +19,8 @@ class CreateModulesTable extends Migration
 	        $table->text('module_description');
 	        $table->tinyInteger('is_active')->default('1');
             $table->timestamps();
+            $table->dateTime('deleted_at')->nullable();
+            $table->index('deleted_at');
         });
     }
 

@@ -16,9 +16,11 @@ class CreateHttpMethodsTable extends Migration
         Schema::create('http_methods', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name',191);
-	        $table->integer('route_id')->default('0');;
+	        $table->integer('route_id')->nullable()->unsigned();
             $table->timestamps();
-	        $table->index('route_id');
+            $table->dateTime('deleted_at')->nullable();
+            $table->index('deleted_at');
+            $table->foreign('route_id')->references('id')->on('routes')->onDelete('cascade');
         });
     }
 

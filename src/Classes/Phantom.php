@@ -258,12 +258,12 @@ class Phantom {
                     $ct .= '<li class="dd-item" data-id="' . $node->id . '" data-name="' . $node->name . '">';
                     $ct .= '<button class="dd-collapse" data-action="collapse" type="button">Collapse</button>
 					<button class="dd-expand" data-action="expand" type="button">Expand</button>
-					<span class="dd-handle"><i class="site-menu-icon ' . $node->menu_icon . '" aria-hidden="true"></i>' . Lang::get('menu.' . $node->name) . '</span>';
+					<span class="dd-handle"><i class="site-menu-icon ' . $node->menu_icon . '" aria-hidden="true"></i> ' . Lang::get('menu.' . $node->name) . '</span>';
                 }
                 else {
                     if ($node->id != null) {
                         $ct .= '<li class="dd-item" data-id="' . $node->id . '" data-name="' . $node->name . '">';
-                        $ct .= '<span class="dd-handle"><i class="site-menu-icon ' . $node->menu_icon . '" aria-hidden="true"></i>' . Lang::get('menu.' . $node->name) . '</span>';
+                        $ct .= '<span class="dd-handle"><i class="site-menu-icon ' . $node->menu_icon . '" aria-hidden="true"></i> ' . Lang::get('menu.' . $node->name) . '</span>';
                     }
                 }
 
@@ -350,13 +350,13 @@ class Phantom {
             $roles = \Auth::user()->roles->pluck('name')->toArray();
             $pms = \Auth::user()->permissions->pluck('name')->toArray();
             $nrs = \Auth::user()->roles()->with('permissions')->get();
+            $nrpms = [];
             foreach ($nrs as $nr)
                 $nrpms = $nr->permissions->pluck('name')->toArray();
             $pms = \Auth::user()->permissions->pluck('name')->toArray();
             if ($pms && $nrpms)
                 $pms = array_merge($nrpms, $pms);
-            elseif (empty($pms)&&!empty($nrpms))
-                $pms = $nrpms;
+            elseif (empty($pms) && !empty($nrpms))
                 $pms = $nrpms;
         }
         switch ($type) {
@@ -384,16 +384,16 @@ class Phantom {
                 $content = '';
                 $menus = \dvplex\Phantom\Modules\Menus\Entities\Menu::with('nodes', 'roles', 'permissions');
                 $menus->where('type', 1);
-                if (session('phantom.preferences.modules_sidemenu')=='on') {
+                if (session('phantom.preferences.modules_sidemenu') == 'on') {
                     $menus_tmp = clone $menus;
-                    $menus_tmp->where('module',config('phantom.modules.current'));
+                    $menus_tmp->where('module', config('phantom.modules.current'));
                     if ($menus_tmp->first())
-                        $menus->where('module',config('phantom.modules.current'));
+                        $menus->where('module', config('phantom.modules.current'));
                 }
 
                 if ($name)
                     $menus->where('name', $name);
-                if ((!empty($roles) || !empty($pms)) && ($menus->first()&& ($menus->first()->roles->count() || $menus->first()->permissions->count()))) {
+                if ((!empty($roles) || !empty($pms)) && ($menus->first() && (@$menus->first()->roles->count() || $menus->first()->permissions->count()))) {
                     $menus->whereHas('roles', function ($q) use ($roles) {
                         $q->whereIn('name', $roles);
                     })
@@ -436,6 +436,7 @@ class Phantom {
                 $menus->where('type', 0);
                 if ($name)
                     $menus->where('name', $name);
+                if ($menus->first())
                 if ((!empty($roles) || !empty($pms)) && ($menus->first()->roles->count() || $menus->first()->permissions->count())) {
                     $menus->whereHas('roles', function ($q) use ($roles) {
                         $q->whereIn('name', $roles);
@@ -464,6 +465,7 @@ class Phantom {
                     }
                 }
                 $menu->html($content);
+
                 return $menu;
                 break;
             case "settings":
@@ -472,9 +474,10 @@ class Phantom {
     }
 
     public function list_modules() {
-        $modules = collect(app('modules')->allEnabled())->map(function ($item){
-           return ['name'=>$item->getLowerName(),'path'=>$item->getPath()];
+        $modules = collect(app('modules')->allEnabled())->map(function ($item) {
+            return ['name' => $item->getLowerName(), 'path' => $item->getPath()];
         });
+
         return $modules;
     }
 
@@ -734,27 +737,24 @@ class Phantom {
         return ob_get_clean();
     }
 
-    public  function array2ini(array $a, array $parent = array())
-    {
+    public function array2ini(array $a, array $parent = array()) {
         $out = '';
-        foreach ($a as $k => $v)
-        {
-            if (is_array($v))
-            {
+        foreach ($a as $k => $v) {
+            if (is_array($v)) {
                 //subsection case
                 //merge all the sections into one array...
-                $sec = array_merge((array) $parent, (array) $k);
+                $sec = array_merge((array)$parent, (array)$k);
                 //add section information to the output
                 $out .= '[' . join('.', $sec) . ']' . PHP_EOL;
                 //recursively traverse deeper
                 $out .= arr2ini($v, $sec);
             }
-            else
-            {
+            else {
                 //plain key->value case
                 $out .= "$k=$v" . PHP_EOL;
             }
         }
+
         return $out;
     }
 }

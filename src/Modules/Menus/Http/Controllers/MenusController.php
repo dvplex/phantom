@@ -30,7 +30,7 @@ class MenusController extends Controller {
 			->searchInit($request, 'menuSearch')
 			->searchFields(['description', 'name'])
 			->orderByFields(['description', 'name'])
-			->search(1);
+			->search();
 		foreach ($menus as $menu) {
 			$role = $menu->roles()->get()->map(function ($item) {
 				return ['value' => $item['id'], 'label' => $item['name']];
@@ -46,7 +46,6 @@ class MenusController extends Controller {
             $menu->setAttribute('role', $role);
 			$menu->setAttribute('permission', $permission);
 	}
-        dd($menus);
 		return view('menus::menu-content', compact('menus'));
 	}
 
@@ -56,10 +55,14 @@ class MenusController extends Controller {
         $types[0]['value'] = 0;
         $types[1]['label'] = trans('menus::messages.Vertical');
         $types[1]['value'] = 1;
-        $modules = list_modules()->map(function ($item){
-            return ['label'=>$item['name'],'value'=>$item['name']];
-        });
-        $modules = json_encode($modules);
+        $mm = [];
+        $n=0;
+        foreach (list_modules() as $k => $module) {
+            $mm[$n]['label']=$k;
+            $mm[$n]['value']=$module['name'];
+            $n++;
+        }
+        $modules = json_encode($mm);
         $types = json_encode($types);
 		$permissions = Permission::all();
 		$mid = [];

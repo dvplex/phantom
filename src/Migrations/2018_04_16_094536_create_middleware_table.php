@@ -16,10 +16,12 @@ class CreateMiddlewareTable extends Migration
         Schema::create('middlewares', function (Blueprint $table) {
             $table->increments('id');
 			$table->string('name')->default('');
-			$table->integer('route_id')->default('0');
+			$table->integer('route_id')->nullable()->unsigned();
             $table->timestamps();
+            $table->dateTime('deleted_at')->nullable();
+            $table->index('deleted_at');
             $table->index('name');
-	        $table->index('route_id');
+            $table->foreign('route_id')->references('id')->on('routes')->onDelete('cascade');
         });
     }
 

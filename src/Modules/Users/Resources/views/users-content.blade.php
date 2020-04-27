@@ -2,7 +2,8 @@
 	<table class="table table-hover table-condensed">
 		<thead>
 		<tr>
-			<th>{{ __('users::messages.Name') }}</th>
+            <th class="phantom-th" @click="orderBy('name')">{{ __('users::messages.Name')}}
+                <i class="fas" :class="orderClass('name')"></i></th>
 			<th>{{ __('users::messages.Email') }}</th>
 			<th>{{ __('messages.Action') }}</th>
 		</tr>
@@ -18,7 +19,17 @@
 				</td>
 				<td>{{ $user->email }}</td>
 				<td>
-					<button class="btn btn-sm btn-primary" data-target="#addUser" data-backdrop="static" data-keyboard="false" data-toggle="modal" @click="editItems({{ $user->toJson() }})">{{ __('modules::messages.edit') }}</button>
+                    <a class="btn btn-sm btn-edit"
+                       data-target="#addUser"
+                       data-backdrop="static"
+                       data-keyboard="false"
+                       data-toggle="modal"
+                       ref="javascript:void(0)"
+                       role="menuitem"
+                       @click="editItems({{ $user->toJson() }})"
+                       title="{{ __('modules::messages.edit') }}">
+                        <i class="far fa-edit" aria-hidden="true"></i>
+                    </a>
 				</td>
 			</tr>
 		@endforeach

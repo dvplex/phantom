@@ -1,4 +1,4 @@
-<form method="post" :action="formPath('/{{ app()->getLocale() }}/routes')" @submit.prevent="passHidden($event,{'moduleId':'{{ $module->id }}'})" @keydown="form.errors.clear($event.target.name)">
+<form method="post" :action="formPath('/{{ app()->getLocale() }}/admin/routes')" @submit.prevent="passHidden($event,{'moduleId':'{{ $module->id }}'})" @keydown="form.errors.clear($event.target.name)">
 	@csrf
 	<div class="card">
 		<div class="card-body">

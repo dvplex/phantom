@@ -1,4 +1,4 @@
-<form method="post" :action="formPath('/{{ app()->getLocale() }}/users')" @submit.prevent="onSubmit" @keydown="form.errors.clear($event.target.name)">
+<form method="post" :action="formPath('/{{ app()->getLocale() }}/admin/users')" @submit.prevent="onSubmit" @keydown="form.errors.clear($event.target.name)">
 	@csrf
 	<div class="card">
 		<div class="col-sm-10 image-editor">

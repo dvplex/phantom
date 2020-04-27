@@ -13,4 +13,9 @@ return [
 
     'cms_theme' => env('CMS_THEME','phantom'),
 
+    /*
+     *  Available locales
+     */
+
+    'locales' => ['bg','en'],
 ];

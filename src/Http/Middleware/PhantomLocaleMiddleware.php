@@ -49,8 +49,8 @@ class PhantomLocaleMiddleware {
 			else {
 				$lang = preg_split('/-|,/', $request->server('HTTP_ACCEPT_LANGUAGE'))[0];
 			}
-			if (!in_array($lang, config('app.locales')))
-				$lang = config('app.locales.0');
+			if (!in_array($lang, config('phantom.locales')))
+				$lang = config('phatom.locales.0');
 			\Session::put('locale', $lang);;
 			app()->setLocale($lang);
 			Carbon::setLocale($lang);

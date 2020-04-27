@@ -17,18 +17,23 @@
 					@endforeach
 				</td>
 				<td>
-					<div class="btn-group" role="group">
-						<button type="button" class="btn btn-outline-primary dropdown-toggle btn-xs btn-add" id="exampleIconDropdown1" data-toggle="dropdown" aria-expanded="false">
-							<i class="fas fa-bars" aria-hidden="true"></i>
-						</button>
-						<div class="dropdown-menu" aria-labelledby="exampleIconDropdown1" role="menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 36px, 0px); top: 0px; left: 0px; will-change: transform;">
-							<a class="dropdown-item" data-target="#addRoute" data-backdrop="static" data-keyboard="false" data-toggle="modal" ref="javascript:void(0)" role="menuitem" @click="editItems({{ $route->toJson() }})"><i class="icon wb-edit" aria-hidden="true"></i>{{ __('modules::messages.edit') }}
-							</a>
-							<a class="dropdown-item" @click="deleteItems({{ $route->toJson() }},'/{{ app()->getLocale() }}/routes/delete/')"><i class="icon wb-trash" aria-hidden="true"></i>{{ __('Delete') }}
-							</a>
-						</div>
-					</div>
-				</td>
+                <td>
+                    <a class="btn btn-sm btn-edit"
+                       data-target="#addRoute"
+                       data-backdrop="static"
+                       data-keyboard="false"
+                       data-toggle="modal"
+                       ref="javascript:void(0)"
+                       role="menuitem"
+                       @click="editItems({{ $route->toJson() }})"
+                       title="{{ __('modules::messages.edit') }}">
+                        <i class="far fa-edit" aria-hidden="true"></i>
+                    </a>
+                    <a class="btn btn-sm btn-trash"
+                       @click="deleteItems({{ $route->id }},'/{{ app()->getLocale() }}/admin/routes/delete/')">
+                        <i class="fas fa-trash" aria-hidden="true"></i>
+                    </a>
+                </td>
 			</tr>
 		@endforeach
 		</tbody>

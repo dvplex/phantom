@@ -34,6 +34,8 @@ class CreateMenuNodesTable extends Migration
 	        $table->unique(['name','menu_id']);
 
 	        $table->timestamps();
+            $table->dateTime('deleted_at')->nullable();
+            $table->index('deleted_at');
         });
     }
 

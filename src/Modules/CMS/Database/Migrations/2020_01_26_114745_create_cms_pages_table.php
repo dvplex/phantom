@@ -20,6 +20,8 @@ class CreateCmsPagesTable extends Migration
             $table->string('file_name')->default('')->unique();
             $table->text('description');
             $table->timestamps();
+            $table->dateTime('deleted_at')->nullable();
+            $table->index('deleted_at');
         });
     }
 

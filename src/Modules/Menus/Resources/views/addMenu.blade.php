@@ -1,4 +1,4 @@
-<form method="post" :action="formPath('/{{ app()->getLocale() }}/menus')" @submit.prevent="onSubmit" @keydown="form.errors.clear($event.target.name)">
+<form method="post" :action="formPath('/{{ app()->getLocale() }}/admin/menus')" @submit.prevent="onSubmit" @keydown="form.errors.clear($event.target.name)">
     @csrf
     <div class="card">
         <div class="card-body">

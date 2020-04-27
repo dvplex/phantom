@@ -23,11 +23,12 @@ class PhantomServiceProvider extends ServiceProvider {
         Phantom::eventsListen();
 
         $this->publishes([
-            __DIR__.'/config/phantom.php' => config_path('phantom.php'),
+            __DIR__ . '/config/phantom.php' => config_path('phantom.php'),
         ]);
-        $cms_theme="phantom";
+        $cms_theme = config('phantom.cms_theme');
         $this->loadViewsFrom(__DIR__ . '/Views', 'phantom');
-        $this->loadViewsFrom(app_path('/CMS/Themes/'.$cms_theme.'/views'), 'cms');
+        if (is_dir(app_path('CMS')))
+            $this->loadViewsFrom(app_path('/CMS/Themes/' . $cms_theme . '/views'), 'frontpage');
 
         $this->publishes([
             __DIR__ . '/Views/' => resource_path('views/vendor/phantom'),
@@ -43,12 +44,15 @@ class PhantomServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register() {
-        $this->app->singleton('phantom', function () {
+        // local only helper test
+        if (file_exists($file = __DIR__ . '/functions.php')) {
+            require $file;
+        }
+        $this->app->singleton('Phantom', function () {
             return $this->app->make('dvplex\Phantom\Classes\Phantom');
         });
 
         $this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
-        $this->loadRoutesFrom(app_path('/CMS/Routes/web.php'));
         $this->loadMigrationsFrom(__DIR__ . '/Migrations/');
 
         if ($this->app->runningInConsole()) {

@@ -56,6 +56,12 @@ class PhantomCollectionSearch {
     }
 
     public function search($perPage = false) {
+        if (isset($this->request->orderByName) && isset($this->request->orderByDir)) {
+            if ($this->request->orderByDir == 'asc')
+                $this->collection = $this->collection->sortBy($this->request->orderByName);
+            elseif ($this->request->orderByDir=='desc')
+                $this->collection = $this->collection->sortByDesc($this->request->orderByName);
+        }
         if ($this->request->per_page) {
             \Session::put('search.' . $this->element . '.perPage', $this->request->per_page);
             $perPage = $this->request->per_page;
@@ -63,7 +69,7 @@ class PhantomCollectionSearch {
         $search = '';
         if ($this->request->q)
             $search = $this->request->q;
-        if ($search){
+        if ($search) {
             foreach ($this->fields as $word) {
                 $filtered[] = $this->collection->filter(function ($item) use ($search, $word) {
                     return stripos($item[$word], $search) !== false;
@@ -75,7 +81,7 @@ class PhantomCollectionSearch {
             }
         }
         else
-            $fll =$this->collection;
+            $fll = $this->collection;
         if ($this->request->q)
             return $fll->paginate($perPage)->appends(['q' => $this->request->q]);
         else

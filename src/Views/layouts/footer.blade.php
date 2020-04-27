@@ -11,5 +11,5 @@
 		web template by <strong><a href="https://adminlte.io">AdminLTE.io</a>.</strong>
 	</div>
 	<!-- Default to the left -->
-	{{ date('Y') }} © <strong><a href="#">DVPLEX</a>.</strong> All Rights reserved
+	{{ date('Y') }} © <strong><a href="#">DVPLEX</a></strong>
 </footer>

@@ -16,6 +16,8 @@ class CreateMenusTable extends Migration {
 			$table->string('name')->default('');
             $table->tinyInteger('type')->default('0');
 			$table->text('description');
+            $table->dateTime('deleted_at')->nullable();
+            $table->index('deleted_at');
 			$table->index('name');
             $table->index('type');
 

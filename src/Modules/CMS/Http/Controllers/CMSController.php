@@ -29,11 +29,16 @@ class CMSController extends Controller {
         $lays = parse_ini_file($dir . '/layouts.ini', true);
         $layouts = [];
         $n = 0;
+
         foreach ($lays as $name => $data) {
+            $path = $dir . '/' . $name . '.blade.php';
             @$layouts[$n]->id = $n;
             @$layouts[$n]->file_name = $name . '.blade.php';
-            @$layouts[$n]->path = $dir . '/' . $name . '.blade.php';
+            @$layouts[$n]->path = $path;
             @$layouts[$n]->description = $data['description'];
+            $lt = file_get_contents($path);
+
+            @$layouts[$n]->hasAceContents = $lt;
             $layouts[$n]=collect($layouts[$n]);
             $n++;
         }
@@ -82,7 +87,7 @@ class CMSController extends Controller {
      * @return Response
      */
     public function update(Request $request, $id) {
-        //
+        return 'layoutsSearch';
     }
 
     /**

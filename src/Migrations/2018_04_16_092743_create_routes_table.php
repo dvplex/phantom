@@ -17,13 +17,16 @@ class CreateRoutesTable extends Migration
             $table->increments('id');
 	        $table->string('httpMethod')->default('get');
 	        $table->string('controllerMethod')->default('index');
-            $table->string('route')->default('')->unique();
+            $table->string('route')->default('');
             $table->integer('module_id')->default('0');
             $table->timestamps();
+            $table->dateTime('deleted_at')->nullable();
+            $table->index('deleted_at');
             $table->index('module_id');
 	        $table->index('httpMethod');
 	        $table->index('controllerMethod');
-	        $table->unique(['httpMethod','controllerMethod','module_id']);
+	        $table->unique(['httpMethod','controllerMethod','module_id','deleted_at']);
+            $table->unique(['route', 'deleted_at']);
         });
     }
 
