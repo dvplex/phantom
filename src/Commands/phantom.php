@@ -39,6 +39,8 @@ class phantom extends Command {
 
 
     public function handle() {
+        shell_exec('npm run dev');
+        exit;
         if (!$this->option('update') && !is_file('phantom.setup.ready'))
             dd('Please run first php artisan phantom:setup');
         $this->info('Unpacking files...');
@@ -54,12 +56,7 @@ class phantom extends Command {
             exit;
         }
 
-        if (substr(php_uname(), 0, 7) == "Windows") {
-            pclose(popen("start /B composer dump-autoload", "r"));
-        }
-        else {
-            shell_exec("composer dump-autoload");
-        }
+        shell_exec("composer dump-autoload");
         $this->info("Migrating Database");
         $this->call('migrate');
         $u = User::first();
@@ -75,21 +72,15 @@ class phantom extends Command {
 
         $this->info('Publishishing files...');
         if (!$this->option('update')) {
-            $this->call('vendor:publish',[
-                '--provider' =>'dvplex\Phantom\PhantomServiceProvider'
+            $this->call('vendor:publish', [
+                '--provider' => 'dvplex\Phantom\PhantomServiceProvider',
             ]);
         }
 
         $this->info("Installing npm modules...");
-        if (substr(php_uname(), 0, 7) == "Windows") {
-            pclose(popen("start /B npm install", "r"));
-            pclose(popen("start /B npm run dev", "r"));
-        }
-        else {
-            shell_exec('chmod 777 -R storage/');
-            shell_exec("npm install");
-            shell_exec("npm run dev");
-        }
+        shell_exec('chmod 777 -R storage/');
+        shell_exec("npm install");
+        shell_exec("npm run dev");
         if (!$this->option('update'))
             unlink('phantom.setup.ready');
 
