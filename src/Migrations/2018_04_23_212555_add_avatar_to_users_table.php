@@ -4,17 +4,15 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddAvatarToUsersTable extends Migration
-{
+class AddAvatarToUsersTable extends Migration {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
-    {
+    public function up() {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('user_avatar')->default('user.png');;
+            $table->string('user_avatar')->default('user.png');
         });
     }
 
@@ -23,8 +21,7 @@ class AddAvatarToUsersTable extends Migration
      *
      * @return void
      */
-    public function down()
-    {
+    public function down() {
         Schema::table('users', function (Blueprint $table) {
             //
         });

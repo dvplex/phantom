@@ -11,10 +11,8 @@ class AlterUsersTable extends Migration {
 	 * @return void
 	 */
 	public function up() {
-	    return;
         Schema::table('users', function (Blueprint $table) {
             $table->string('username')->nullable()->unique();
-
         });
 	}
 
@@ -24,6 +22,8 @@ class AlterUsersTable extends Migration {
 	 * @return void
 	 */
 	public function down() {
-		Schema::dropIfExists('users');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('users');
+        });
 	}
 }
