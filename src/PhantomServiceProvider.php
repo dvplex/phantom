@@ -44,6 +44,10 @@ class PhantomServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register() {
+        // local only helper test
+        $this->app->singleton('Phantom', function () {
+            return $this->app->make('dvplex\Phantom\Classes\Phantom');
+        });
 
         $this->loadRoutesFrom(__DIR__ . '/Http/routes.php');
         $this->loadMigrationsFrom(__DIR__ . '/Migrations/');
