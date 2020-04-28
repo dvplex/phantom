@@ -39,8 +39,6 @@ class phantom extends Command {
 
 
     public function handle() {
-        shell_exec('npm run dev');
-        exit;
         if (!$this->option('update') && !is_file('phantom.setup.ready'))
             dd('Please run first php artisan phantom:setup');
         $this->info('Unpacking files...');
