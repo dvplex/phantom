@@ -17,11 +17,6 @@
 				</h3>
 			</div>
 		<div class="card-body table-responsive p-0">
-			<list-content v-if="hasContent.roleSearch==false">
-				<template>
-					{{ __('modules::messages.no records found') }}
-				</template>
-			</list-content>
 			<div class="phantom-content roleSearch">
 				@include('roles::role-content')
 			</div>

@@ -20,9 +20,6 @@
                 </h3>
             </div>
             <div class="card-body table-responsive">
-                <list-content v-if="hasContent.routeSearch==false">
-                    {{ __('modules::messages.no records found') }}
-                </list-content>
                 <div class="phantom-content routeSearch">
                 </div>
             </div>

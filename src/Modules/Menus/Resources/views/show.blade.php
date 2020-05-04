@@ -34,9 +34,6 @@
                         <div class="panel">
                             <div class="panel-heading">
                                 <div class="panel-body">
-                                    <list-content v-if="hasContent.menuNodeSearch==false">
-                                        {{ __('modules::messages.no records found') }}
-                                    </list-content>
                                     <div class="phantom-content menuNodeSearch">
                                     </div>
                                 </div>
@@ -70,5 +67,4 @@
             @include('menus::addMenuTree')
         </template>
     </side-modal>
-    </div>
 @stop

@@ -25,17 +25,20 @@ class PhantomLocaleMiddleware {
 			return $next($request);
 		config(['phantom.modules.current' => preg_replace(['/phantom\.modules\./', '/\@\S+/'], '', $request->route()->getName())]);
 		if ($request->route('lang')) {
-			if (in_array($request->route('lang'), config('app.locales'))) {
+			if (in_array($request->route('lang'), config('phantom.locales'))) {
 				$lang = $request->route('lang');
 				\Session::put('locale', $lang);
 				app()->setLocale($lang);
 				Carbon::setLocale($lang);
 			}
 			else {
-				if (session('locale'))
+                if (session('locale'))
 					$lang = session('locale');
-				else
-					$lang = config('app.locales.0');
+				else {
+                    $lang = preg_split('/-|,/', $request->server('HTTP_ACCEPT_LANGUAGE'))[0];
+                    if (!in_array($lang, config('phantom.locales')))
+                        $lang = config('phatom.locales.0');
+                }
 				$request->route()->setParameter('lang', $lang);
 				if (preg_match('/^\/([a-z]){2}$/', $request->getRequestUri()))
 					return redirect($lang . preg_replace('/^\/([a-z]){2}/', '', $request->getRequestUri()));

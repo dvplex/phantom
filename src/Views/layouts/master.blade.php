@@ -15,7 +15,7 @@
 	@php $dsm= 'layout-top-nav' @endphp
 @endif
 <body class="hold-transition sidebar-mini layout-navbar-fixed layout-footer-fixed {{ $dsm }} {{ $csb }} text-sm">
-<div class="wrapper">
+<div id="app" class="wrapper">
 	<!--[if lt IE 8]>
 	<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please
 		<a href="http://browsehappy.com/">upgrade
@@ -25,7 +25,7 @@
 @include('phantom::layouts.side-navbar')
 <!-- Page -->
 
-	<div id="app" class="content-wrapper">
+	<div class="content-wrapper">
 		<div class="content-header">
 			@include('phantom::layouts.page-header')
 		</div>

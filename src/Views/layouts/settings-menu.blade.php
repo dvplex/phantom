@@ -12,7 +12,7 @@
 					<ul data-widget="treeview" data-accordion="false" class="nav nav-pills nav-sidebar flex-column nav-flat">
 						<li></li>
 						<li class="nav-item">
-							<a class="nav-link" href="/{{ app()->getLocale() }}/admin/settings/general/"><i class="nav-icon fas fa-cog text-blue" aria-hidden="true"></i>
+							<a class="nav-link" href="/{{ app()->getLocale() }}/admin/settings/"><i class="nav-icon fas fa-cog text-blue" aria-hidden="true"></i>
 								<span>{{ __('modules::settings.general') }}</span>
 							</a>
 						</li>

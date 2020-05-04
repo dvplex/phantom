@@ -20,7 +20,6 @@ class PhantomServiceProvider extends ServiceProvider {
 
         Phantom::registerConfig();
 
-        Phantom::eventsListen();
 
         $this->publishes([
             __DIR__ . '/config/phantom.php' => config_path('phantom.php'),
@@ -44,7 +43,6 @@ class PhantomServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register() {
-        // local only helper test
         $this->app->singleton('Phantom', function () {
             return $this->app->make('dvplex\Phantom\Classes\Phantom');
         });

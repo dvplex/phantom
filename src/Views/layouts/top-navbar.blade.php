@@ -36,7 +36,7 @@
 			   aria-expanded="false" role="button">
 				<span class="flag-icon flag-icon-{{ $flag }}"></span>
 			</a>
-			<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" role="menu">
+			<div class="dropdown-menu dropdown-menu-sm dropdown-menu-right" role="menu">
 				<a class="dropdown-item" href="/locale/en" role="menuitem">
 					<span class="flag-icon flag-icon-us"></span> English</a>
 				<a class="dropdown-item" href="/locale/bg" role="menuitem">
@@ -55,7 +55,7 @@
 			<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right elevation-3" role="menu">
 				<a class="dropdown-item" href="javascript:void(0)" role="menuitem"><i class="icon wb-user" aria-hidden="true"></i>
 					{{ __('menu.Profile') }}</a>
-				<a class="dropdown-item" href="/{{ app()->getLocale() }}/{{ config('phantom.modules.main') }}/settings/general/" role="menuitem"><i class="icon wb-settings" aria-hidden="true"></i>
+				<a class="dropdown-item" href="/{{ app()->getLocale() }}/{{ config('phantom.modules.main') }}/settings/" role="menuitem"><i class="icon wb-settings" aria-hidden="true"></i>
 					{{ __('menu.Settings') }}</a>
 				<div class="dropdown-divider" role="presentation"></div>
 				<a class="dropdown-item" href="{{ route('logout') }}" role="menuitem"

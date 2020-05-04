@@ -4,11 +4,11 @@
         @foreach(Request::segments() as $segment)
         <?php $segments .= '/' . $segment; ?>
         @if(! $loop->last && !$loop->first)
-            <li class="">
+                / <li class="">
                 <a href="{{ $segments }}">{{ucfirst($segment)}}</a>
             </li>
         @endif
     @endforeach
-        <li class="last active"><a>{{ ucfirst(last(request()->segments())) }}</a></li>
+        / <li class="last active"><a>{{ ucfirst(last(request()->segments())) }}</a></li>
 </ul>
 <hr>

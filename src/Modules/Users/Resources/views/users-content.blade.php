@@ -30,8 +30,12 @@
                        title="{{ __('modules::messages.edit') }}">
                         <i class="far fa-edit" aria-hidden="true"></i>
                     </a>
-				</td>
-			</tr>
+                    <button class="btn btn-sm btn-trash"
+                       @click="deleteItems({{ $user->id }},'/{{ app()->getLocale() }}/admin/users/delete/')" @if(auth()->id()===$user->id) disabled="disabled" @endif>
+                        <i class="fas fa-trash" aria-hidden="true"></i>
+                    </button>
+                </td>
+            </tr>
 		@endforeach
 		</tbody>
 	</table>

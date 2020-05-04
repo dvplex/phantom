@@ -18,7 +18,7 @@
 						{{ __('menu.Settings') }}
 						<hr>
 						<div class="panel-body text-center panel-settings">
-							<a href="/{{ app()->getLocale() }}/admin/settings/general/">
+							<a href="/{{ app()->getLocale() }}/admin/settings/">
 								<div class="card card-block p-0">
 									<div class="counter counter-lg counter-inverse bg-blue-600 vertical-align w-100 h-100">
 										<div class="vertical-align-middle">

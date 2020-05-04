@@ -113,7 +113,7 @@ trait PhantomSearch {
 		if ($this->request->q)
 			return $query->paginate($perPage)->appends(['q' => $this->request->q]);
 		else
-			return $query->paginate($perPage);
+            return $query->paginate($perPage);
 
 	}
 

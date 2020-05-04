@@ -17,11 +17,6 @@
 		</h3>
 	</div>
 	<div class="card-body p-0 table-responsive">
-		<list-content v-if="hasContent.permissionSearch==false">
-			<template>
-				{{ __('modules::messages.no records found') }}
-			</template>
-		</list-content>
 		<div class="phantom-content permissionSearch">
 			@include('permissions::permission-content')
 		</div>

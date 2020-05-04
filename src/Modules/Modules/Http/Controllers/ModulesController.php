@@ -133,8 +133,9 @@ class ModulesController extends Controller {
 	public function vue_trans() {
 		$lang = \Session::get('locale');
 		app()->setLocale($lang);
-
-		return trans('alerts');
+		$trans = trans('alerts');
+		$trans = array_add($trans,'app_lang',$lang);
+		return $trans;
 	}
     public function settings() {
         return view('modules::settings');

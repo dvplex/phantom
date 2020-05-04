@@ -18,7 +18,7 @@ Route::group(['middleware' => ['auth']], function ($router) {
     Route::post('/{lang}/admin/modules/add', 'ModulesController@store')->name('phantom.modules.modules@store');
     Route::post('/{lang}/admin/modules/edit', 'ModulesController@update')->name('phantom.modules.modules@update');
     Route::get('/{lang?}/admin/admin/settings', 'ModulesController@s_general')->name('phantom.modules.modules@settings');
-    Route::get('/{lang?}/admin/settings/general', 'ModulesController@s_general')->name('phantom.modules.modules@s_general');
+    Route::get('/{lang?}/admin/settings', 'ModulesController@s_general')->name('phantom.modules.modules@s_general');
     Route::post('{lang}/admin/settings/save_prefs', 'ModulesController@save_prefs')->name('phantom.modules.modules@save_prefs');
 });
 Route::group(['middleware' => ['web']], function ($router) {

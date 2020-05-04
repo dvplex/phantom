@@ -21,11 +21,6 @@
                 </h3>
             </div>
             <div class="card-body table-responsive">
-                <list-content v-if="hasContent.menuSearch==false">
-                    <template>
-                        {{ __('modules::messages.no records found') }}
-                    </template>
-                </list-content>
                 <div class="phantom-content menuSearch">
                 </div>
             </div>

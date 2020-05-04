@@ -12,7 +12,11 @@ class AlterUsersTable extends Migration {
 	 */
 	public function up() {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('username')->nullable()->unique();
+            $table->dropUnique('users_email_unique');
+            $table->string('username')->nullable();
+            $table->dateTime('deleted_at')->nullable();
+            $table->unique(['username','deleted_at']);
+            $table->unique(['email','deleted_at']);
         });
 	}
 
@@ -24,6 +28,7 @@ class AlterUsersTable extends Migration {
 	public function down() {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('users');
+            $table->dropColumn('deleted_at');
         });
 	}
 }

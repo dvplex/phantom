@@ -9,11 +9,13 @@ use dvplex\Phantom\Models\Role;
 use dvplex\Phantom\Models\User;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Schema;
 use dvplex\Phantom\Modules\Modules\Entities\Preference;
 use Nwidart\Modules\Facades\Module;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Event;
+use phpDocumentor\Reflection\Types\Collection;
 use Spatie\Menu\Laravel\Menu;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Artisan;
@@ -114,20 +116,6 @@ class Phantom {
         $args['lang'] = app()->getLocale();
 
         return route('phantom.modules.' . $path, $args);
-    }
-
-    public function eventsListen() {
-        Event::listen('phantom.*', function ($eventName, $data) {
-            $eventName = preg_replace('/phantom\./', '', $eventName);
-            $method = new \ReflectionMethod(Phantom::class, $eventName);
-
-            return $method->invokeArgs(NULL, $data);
-
-        });
-    }
-
-    public function phantom_event_fire($event, $args = false) {
-        Event::dispatch('phantom.' . $event, $args);
     }
 
 
@@ -238,7 +226,7 @@ class Phantom {
         return redirect($str);
     }
 
-    public static function phantom_prefs($user = false) {
+    public function phantom_prefs($user = false) {
         if (!$user)
             $user = \Auth::id();
         else
@@ -248,6 +236,25 @@ class Phantom {
             session()->put('phantom.preferences.' . $k, $v);
 
         return;
+    }
+
+    public function set_cookies($user = false) {
+        if (!$user)
+            $user = \Auth::user();
+
+        $creds = new \stdClass();
+        $creds->username = $user->username;
+        $creds->name = $user->name;
+        $creds->email = $user->email;
+        $creds->avatar = $user->user_avatar;
+        Cookie::queue('phantom', serialize($creds), 999999999999);
+
+        return;
+    }
+
+    public function get_cookies() {
+        $creds = unserialize(Cookie::get('phantom'));
+        return $creds;
     }
 
     protected static function renderNode($node, $type = false, $depth = false) {
@@ -437,14 +444,14 @@ class Phantom {
                 if ($name)
                     $menus->where('name', $name);
                 if ($menus->first())
-                if ((!empty($roles) || !empty($pms)) && ($menus->first()->roles->count() || $menus->first()->permissions->count())) {
-                    $menus->whereHas('roles', function ($q) use ($roles) {
-                        $q->whereIn('name', $roles);
-                    })
-                        ->orWhereHas('permissions', function ($q) use ($pms) {
-                            $q->whereIn('name', $pms);
-                        });
-                }
+                    if ((!empty($roles) || !empty($pms)) && ($menus->first()->roles->count() || $menus->first()->permissions->count())) {
+                        $menus->whereHas('roles', function ($q) use ($roles) {
+                            $q->whereIn('name', $roles);
+                        })
+                            ->orWhereHas('permissions', function ($q) use ($pms) {
+                                $q->whereIn('name', $pms);
+                            });
+                    }
                 $menus = $menus->first();
                 if ($menus == null)
                     return;
@@ -678,7 +685,7 @@ class Phantom {
 
                 $pieces = array_reverse($pieces);
 
-                if (count($pieces) > 1 AND strpos($pieces[count($pieces) - 1], ' и ') === false) {
+                if (count($pieces) > 1 and strpos($pieces[count($pieces) - 1], ' и ') === false) {
                     $pieces[] = $pieces[count($pieces) - 1];
                     $pieces[count($pieces) - 2] = 'и';
                 }
