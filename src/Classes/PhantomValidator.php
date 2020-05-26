@@ -26,7 +26,10 @@ class PhantomValidator {
 			$count->where($attribute,$value);
 			foreach ($parameters as $param) {
 				$p = explode('::',$param);
-				$count->where($p[0],$p[1]);
+				if ($p[1]== 'NULL')
+    				$count->whereNull($p[0]);
+				else
+                    $count->where($p[0],$p[1]);
 			}
 			return $count->count() === 0;
 		});

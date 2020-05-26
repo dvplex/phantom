@@ -127,7 +127,7 @@ class UsersController extends Controller {
     public function update(Request $request) {
         $idField = config('phantom.user_primary_key');
         $validatedData = $request->validate([
-            'username' => 'unique:users,username,' . $request->idField . ',id,deleted_at,NULL|max:191|without_spaces',
+            'username' => 'unique:users,username,' . $request->id . ',id,deleted_at,NULL|max:191|without_spaces',
             'name'     => 'min:4',
             'password' => 'min:6|confirmed',
             'email'    => 'required|email',

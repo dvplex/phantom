@@ -67,9 +67,10 @@ class MenuNodesController extends Controller {
 		@$last_seq = MenuNode::orderBy('menu_pos','desc')->first()->menu_pos+1;
 		if (!$last_seq)
 			$last_seq=1;
-		$params = 'menu_id::'.$request->menuId;
+		$menu_id = 'menu_id::'.$request->menuId;
+		$menu_name = 'name::'.$request->name;
 		$validatedData = $request->validate([
-			'name' => 'required|unique_multiple:menu_nodes,'.$params.'|max:255',
+			'name' => 'required|unique_multiple:menu_nodes,'.$menu_id.',deleted_at::NULL,'.$menu_name.'|max:255',
 		]);
 		$menu = new MenuNode();
 		$menu->name = $request->name;

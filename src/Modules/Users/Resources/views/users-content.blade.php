@@ -15,7 +15,7 @@
 					<div class="user-avatar">
 						<img class="img-circle img-bordered-sm" src="/images/avatar/{{ $user->user_avatar }}" alt="">
 					</div>
-					<span style="color:#000">{{ $user->name }}</span> ({{ $user->username }})
+                    <span style="color:#000">{{ $user->name }} ({{ $user->username }})</span>
 				</td>
 				<td>{{ $user->email }}</td>
 				<td>

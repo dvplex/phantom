@@ -10,6 +10,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Routing\Router;
 use dvplex\Phantom\Modules\Modules\Entities\Module;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use dvplex\Phantom\Modules\Modules\Entities\Preference;
@@ -48,9 +49,15 @@ class ModulesController extends Controller {
 	 */
 	public function store(Request $request) {
 		$validatedData = $request->validate([
-			'module_name'        => 'required|unique:modules|max:255|without_spaces',
+			'module_name'        => 'required|unique:modules,module_name,NULL,id,deleted_at,NULL|max:255|without_spaces',
 			'module_description' => 'required|min:2',
 		]);
+        $module = \Nwidart\Modules\Facades\Module::find(camel_case($request->module_name));
+        if ($module) {
+            $response['message']='The given data was invalid.';
+            $response['errors']['module_name']=[trans('validation.delete_module')];
+            return response()->json($response,422);
+        }
 		Phantom::module_add($request);
 
 		return 'moduleSearch';
@@ -62,7 +69,7 @@ class ModulesController extends Controller {
 	 * Show the specified resource.
 	 * @return Response
 	 */
-	public function show(Router $router, $lang, $module_id) {
+	public function show(Router $router, $lang, Module $module) {
 		$middleware = [];
 		$rg = $router->getMiddlewareGroups();
 		$n = 0;
@@ -79,7 +86,7 @@ class ModulesController extends Controller {
 			$middleware[$n]['value'] = $k;
 			$n++;
 		}
-		$module= Module::findOrFail($module_id);
+		$module= Module::findOrFail($module->id);
 		$middlewares = json_encode($middleware);
 		$method = json_encode([['label'=>'get','value'=>'get'],['label'=>'post','value'=>'post'],['label'=>'patch','value'=>'patch'],['label'=>'delete','value'=>'delete'],['label'=>'put','value'=>'put'],]);
 
@@ -115,7 +122,7 @@ class ModulesController extends Controller {
 	public function update(Request $request) {
 
 		$validatedData = $request->validate([
-			'module_name'        => 'required|unique:modules,module_name,' . $request->id . '|max:255|without_spaces',
+			'module_name'        => 'required|unique:modules,module_name,'.$request->id.',id,deleted_at,NULL|max:255|without_spaces',
 			'module_description' => 'required|min:2',
 		]);
 		Phantom::module_edit($request);
@@ -127,7 +134,18 @@ class ModulesController extends Controller {
 	 * Remove the specified resource from storage.
 	 * @return Response
 	 */
-	public function destroy() {
+	public function destroy(Request $request) {
+	    $mod = Module::find($request->id);
+        $module = \Nwidart\Modules\Facades\Module::find(camel_case($mod->module_name));
+        $nameSpace = 'Modules';
+        $studlyName = $module->getStudlyName();
+        $webmix_newline = "\nrequire('./{$nameSpace}/{$studlyName}/webpack.mix.js');";
+        $wm = file_get_contents(base_path() . '/webpack.mix.js');
+        file_put_contents(base_path() . '/webpack.mix.js', str_replace($webmix_newline,'',$wm));
+	    Artisan::call('module:disable',['module'=>$mod->module_name]);
+	    $mod->delete();
+        $mod->routes()->delete();
+        return 'moduleSearch';
 	}
 
 	public function vue_trans() {

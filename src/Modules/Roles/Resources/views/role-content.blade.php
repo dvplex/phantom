@@ -29,8 +29,13 @@
                        title="{{ __('modules::messages.edit') }}">
                         <i class="far fa-edit" aria-hidden="true"></i>
                     </a>
-				</td>
-			</tr>
+                    <button class="btn btn-sm btn-trash"
+                       @if($role->name=='Administrator') disabled="disabled" @endif
+                       @click="deleteItems({{ $role->id }},'/{{ app()->getLocale() }}/admin/roles/delete/')">
+                        <i class="fas fa-trash" aria-hidden="true"></i>
+                    </button>
+                </td>
+            </tr>
 		@endforeach
 		</tbody>
 	</table>

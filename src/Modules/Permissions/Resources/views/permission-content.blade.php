@@ -29,6 +29,10 @@
                            title="{{ __('modules::messages.edit') }}">
                             <i class="far fa-edit" aria-hidden="true"></i>
                         </a>
+                        <a class="btn btn-sm btn-trash"
+                           @click="deleteItems({{ $permission->id }},'/{{ app()->getLocale() }}/admin/permissions/delete/')">
+                            <i class="fas fa-trash" aria-hidden="true"></i>
+                        </a>
 					</td>
 				</tr>
 			@endforeach

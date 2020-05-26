@@ -254,6 +254,7 @@ class Phantom {
 
     public function get_cookies() {
         $creds = unserialize(Cookie::get('phantom'));
+
         return $creds;
     }
 
@@ -564,9 +565,7 @@ class Phantom {
     }
 
     public function module_edit($request) {
-        $module_name = studly_case($request->module_name);
-        $modules = \Modules\Modules\Entities\Module::find($request->id);
-        $modules->module_name = $module_name;
+        $modules = \dvplex\Phantom\Modules\Modules\Entities\Module::find($request->id);
         $modules->module_description = $request->get('module_description');
 
         return $modules->save();

@@ -103,7 +103,7 @@ class MenusController extends Controller {
 	 */
 	public function store(Request $request) {
 		$validatedData = $request->validate([
-			'name'        => 'required|unique:menu_nodes|max:255|without_spaces',
+			'name'        => 'required|unique:menus,name,NULL,id,deleted_at,NULL|max:255|without_spaces',
 			'description' => 'required|min:2',
 		]);
 		$menu = new Menu();
@@ -132,7 +132,7 @@ class MenusController extends Controller {
 	 * Show the specified resource.
 	 * @return Response
 	 */
-	public function show($lang, $menu_id) {
+	public function show($lang, Menu $menu) {
 		$fa_icons = get_fa_icons();
 		$route = [];
 		$routes = app()->routes->getRoutes();
@@ -147,7 +147,7 @@ class MenusController extends Controller {
 				}
 			}
 		}
-		$menu = Menu::with('nodes')->findOrFail($menu_id);
+		$menu = Menu::with('nodes')->findOrFail($menu->id);
 		$menuNodes = $menu->nodes()->get();
 		$parentNodes = [];
 		$m = 0;
@@ -201,7 +201,7 @@ class MenusController extends Controller {
 	 */
 	public function update(Request $request) {
 		$validatedData = $request->validate([
-			'name'        => 'required|unique:menus,name,' . $request->id . '|max:255|without_spaces',
+			'name'        => 'required|unique:menus,name,' . $request->id . ',id,deleted_at,NULL|max:255|without_spaces',
 			'description' => 'required|min:2',
 		]);
 		$menu = Menu::find($request->id);
@@ -262,6 +262,9 @@ class MenusController extends Controller {
 	 * Remove the specified resource from storage.
 	 * @return Response
 	 */
-	public function destroy() {
+	public function destroy(Request $request) {
+	    MenuNode::where('menu_id',$request->id)->delete();
+	    Menu::find($request->id)->delete();
+	    return 'menuSearch';
 	}
 }

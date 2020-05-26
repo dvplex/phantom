@@ -14,7 +14,7 @@
 					<td>{{ $menu->description}}</td>
 					<td>
                         <a class="btn btn-sm btn-details"
-                           href="{{ phantom_link('menus@show',['menu'=> $menu->id]) }}"
+                           href="{{ phantom_link('menus@show',['menu'=> $menu->name]) }}"
                            title="{{ __('messages.details') }}">
                             <i class="fas fa-info-circle" aria-hidden="true"></i>
                         </a>
@@ -28,6 +28,10 @@
                            @click="editItems({{ $menu->toJson() }})"
                            title="{{ __('modules::messages.edit') }}">
                             <i class="far fa-edit" aria-hidden="true"></i>
+                        </a>
+                        <a class="btn btn-sm btn-trash"
+                           @click="deleteItems({{ $menu->id }},'/{{ app()->getLocale() }}/admin/menus/delete/')">
+                            <i class="fas fa-trash" aria-hidden="true"></i>
                         </a>
 					</td>
 				</tr>

@@ -16,7 +16,6 @@
 						{{ $mw->name }}<br>
 					@endforeach
 				</td>
-				<td>
                 <td>
                     <a class="btn btn-sm btn-edit"
                        data-target="#addRoute"

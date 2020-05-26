@@ -6,5 +6,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/{lang?}/admin/settings/roles/{module}', 'RolesController@show')->name('phantom.modules.roles@show');
     Route::post('/{lang}/admin/roles/add', 'RolesController@store')->name('phantom.modules.roles@store');
     Route::post('/{lang}/admin/roles/edit', 'RolesController@update')->name('phantom.modules.roles@update');
+    Route::post('/{lang}/admin/roles/delete', 'RolesController@destroy')->name('phantom.modules.roles@destroy');
 });
 

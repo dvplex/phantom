@@ -104,6 +104,9 @@ class PermissionsController extends Controller {
 	 * Remove the specified resource from storage.
 	 * @return Response
 	 */
-	public function destroy() {
+	public function destroy(Request $request) {
+	    Permission::find($request->id)->delete();
+
+	    return 'permissionSearch';
 	}
 }

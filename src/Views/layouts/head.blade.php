@@ -8,8 +8,8 @@
 
 	<title>{{ config('app.name', 'DVPLEX') }}</title>
 
-	<link rel="apple-touch-icon" href="">
-	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="apple-touch-icon" href="/favicon.ico" color="white"/>
+	<link rel="shortcut icon" href="/favicon.ico"/>
 
 	<!-- Stylesheets -->
 	<link href="{{ asset('css/app.css') }}" rel="stylesheet">

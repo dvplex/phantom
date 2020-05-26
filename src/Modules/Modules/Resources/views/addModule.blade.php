@@ -2,12 +2,12 @@
 	@csrf
 	<div class="card">
 		<div class="card-body">
-			<div class="form-group">
+			<div v-show="!valData" class="form-group">
 				<label>{{ __('modules::messages.Name') }}</label>
 				<input :class="{focus: valData}" type="text" class="form-control" name="module_name" v-model="form.formData.module_name" autofocus>
 				<span class="text-danger" v-if="form.errors.has('module_name')" v-text="form.errors.get('module_name')"></span>
 			</div>
-			<div class="form-group">
+			<div v-show="!valData" class="form-group">
 				<label>{{ __('modules::messages.Path') }}</label>
 				<input :class="{focus: valData}" type="text" class="form-control" name="module_path" v-model="form.formData.module_path">
 				<span class="text-danger" v-if="form.errors.has('module_path')" v-text="form.errors.get('module_path')"></span>

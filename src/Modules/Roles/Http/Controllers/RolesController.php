@@ -124,6 +124,13 @@ class RolesController extends Controller {
 	 * @return Response
 	 */
 	public
-	function destroy() {
+	function destroy(Request $request) {
+	    $role = Role::find($request->id);
+	    if ($role->name=='Administrator')
+            return 'roleSearch';
+	    $role->permissions()->delete();
+	    $role->delete();
+
+	    return 'roleSearch';
 	}
 }

@@ -15,7 +15,7 @@
 				<td>
 
                     <a class="btn btn-sm btn-details"
-                       href="{{ phantom_link('modules@show',['module'=> $module->id]) }}"
+                       href="{{ phantom_link('modules@show',['module'=> $module->module_name]) }}"
                        title="{{ __('messages.details') }}">
                         <i class="fas fa-info-circle" aria-hidden="true"></i>
                     </a>
@@ -30,6 +30,10 @@
                        title="{{ __('modules::messages.edit') }}">
                         <i class="far fa-edit" aria-hidden="true"></i>
                     </a>
+                    <button class="btn btn-sm btn-trash"
+                            @click="deleteItems({{ $module->id }},'/{{ app()->getLocale() }}/admin/modules/delete/')">
+                        <i class="fas fa-trash" aria-hidden="true"></i>
+                    </button>
 				</td>
 			</tr>
 		@endforeach
