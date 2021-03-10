@@ -23,6 +23,7 @@
         "laravel/ui": ">=2.0",
         "illuminate/support": ">=6.0",
         "laravel/helpers": ">=1.1",
+		"laravel/legacy-factories": "^1.0",
         "php" : "~7.3|~7.2|~7.1"
     },
     "require-dev": {

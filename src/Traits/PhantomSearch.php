@@ -67,29 +67,30 @@ trait PhantomSearch {
             \Session::put('search.' . $this->element . '.perPage', $this->request->per_page);
             $perPage = $this->request->per_page;
         }
-        if ($this->request->q)
-            $query->where(function ($query) {
-                $rq = $this->request;
-                $table = $query->first();
-                if ($table)
-                    $table = $table->getTable() . '.';
-                else
-                    $table = '';
-                foreach ($this->fields as $field) {
-                    if (preg_match('/::/', $field)) {
-                        $fld = explode('::', $field);
-                        $query->orWhereHas($fld[0], function ($query) use ($fld, $rq) {
-                            $query->Where($fld[1], 'LIKE', "%{$rq->q}%");
-                        });
-                    }
-                    else {
-                        $query->orWhere($table . $field, 'LIKE', "%{$this->request->q}%");
-                    }
-                }
-            });
-        if (isset($this->request->orderByName) && isset($this->request->orderByDir)) {
-            $query->getQuery()->orders = null;
-            if (preg_match('/::/', $this->request->orderByName)) {
+        if ($this->request->q) {
+	        $query->where(function ($query) {
+		        $rq = $this->request;
+		        $table = $query->first();
+		        if ($table)
+			        $table = $table->getTable() . '.';
+		        else
+			        $table = '';
+		        foreach ($this->fields as $field) {
+			        if (preg_match('/::/', $field)) {
+				        $fld = explode('::', $field);
+				        $query->orWhereHas($fld[0], function ($query) use ($fld, $rq) {
+					        $query->Where($fld[1], 'LIKE', "%{$rq->q}%");
+				        });
+			        }
+			        else {
+				        $query->orWhere($table . $field, 'LIKE', "%{$this->request->q}%");
+			        }
+		        }
+	        });
+        }
+	    if (isset($this->request->orderByName) && isset($this->request->orderByDir)) {
+		    $query->getQuery()->orders = null;
+		    if (preg_match('/::/', $this->request->orderByName)) {
                 $fld = explode('::', $this->request->orderByName);
                 $rel = $query->first()->company();
                 $table = $rel->getRelated()->getTable();

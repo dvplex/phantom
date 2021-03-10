@@ -26,8 +26,10 @@ class PhantomServiceProvider extends ServiceProvider {
         ]);
         $cms_theme = config('phantom.cms_theme');
         $this->loadViewsFrom(__DIR__ . '/Views', 'phantom');
-        if (is_dir(app_path('CMS')))
+        if (is_dir(app_path('CMS'))) {
+            $this->loadRoutesFrom(app_path('/CMS/Routes/web.php'));
             $this->loadViewsFrom(app_path('/CMS/Themes/' . $cms_theme . '/views'), 'frontpage');
+        }
 
         $this->publishes([
             __DIR__ . '/Views/' => resource_path('views/vendor/phantom'),

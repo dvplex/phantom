@@ -122,7 +122,6 @@ class Phantom {
     public function registerAliases() {
         $loader = AliasLoader::getInstance();
         $loader->alias('Phantom', Phantom::class);
-        $loader->alias('PhantomEvent', PhantomEvent::class);
 
         return;
     }
