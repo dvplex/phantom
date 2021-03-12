@@ -76,7 +76,7 @@ class phantom extends Command {
         }
 
         $this->info("Installing npm modules...");
-        shell_exec('chmod 777 -R storage/');
+        shell_exec('chmod -R 777 storage/');
         shell_exec("npm install");
         shell_exec("npm run dev");
         if (!$this->option('update'))
