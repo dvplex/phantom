@@ -16,7 +16,6 @@ class AlterUsersTable extends Migration {
             $table->string('username')->nullable();
 	        $table->string('user_avatar')->default('user.png');
 	        $table->dateTime('deleted_at')->nullable();
-            $table->rememberToken();
 			$table->string('api_token', 80)->after('password')
 				->unique()
 				->nullable()
