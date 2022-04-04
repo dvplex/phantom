@@ -45,6 +45,7 @@ class PhantomServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register() {
+    	 // local only helper test
         $this->app->singleton('Phantom', function () {
             return $this->app->make('dvplex\Phantom\Classes\Phantom');
         });

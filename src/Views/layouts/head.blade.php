@@ -16,5 +16,4 @@
 	<link href="{{ asset('css/after.css') }}" rel="stylesheet">
 	@include( config('phantom.modules.current') .'::layouts.head')
 
-
 </head>
