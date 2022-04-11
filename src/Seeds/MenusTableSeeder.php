@@ -14,7 +14,7 @@ class MenusTableSeeder extends Seeder
         DB::table('menus')->insert([
             'name' => 'side_menu',
             'type' => 1,
-            'Description' => 'This is a side menu',
+            'description' => 'This is a side menu',
         ]);
 
         DB::table('menu_nodes')->insert([
@@ -30,7 +30,7 @@ class MenusTableSeeder extends Seeder
         DB::table('menus')->insert([
             'name' => 'top_menu',
             'type' => 0,
-            'Description' => 'This is a top menu',
+            'description' => 'This is a top menu',
         ]);
 
         DB::table('menu_nodes')->insert([
