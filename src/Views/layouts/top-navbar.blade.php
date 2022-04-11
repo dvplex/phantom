@@ -34,13 +34,13 @@
 		<li class="nav-item dropdown">
 			<a class="nav-link" data-toggle="dropdown" href="javascript:void(0)" data-animation="scale-up"
 			   aria-expanded="false" role="button">
-				<span class="flag-icon flag-icon-{{ $flag }}"></span>
+				<span class="fi fi-{{ $flag }}"></span>
 			</a>
 			<div class="dropdown-menu dropdown-menu-sm dropdown-menu-right" role="menu">
 				<a class="dropdown-item" href="/locale/en" role="menuitem">
-					<span class="flag-icon flag-icon-us"></span> English</a>
+					<span class="fi fi-us"></span> English</a>
 				<a class="dropdown-item" href="/locale/bg" role="menuitem">
-					<span class="flag-icon flag-icon-bg"></span> Български</a>
+					<span class="fi fi-bg"></span> Български</a>
 			</div>
 		</li>
 		<li class="nav-item dropdown">
